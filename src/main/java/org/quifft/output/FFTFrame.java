@@ -1,8 +1,8 @@
 package org.quifft.output;
 
 /**
- * The result of an FFT being computed for a single sampling window of an audio file.
- * An {@link FFTResult} for a full audio file will contain an array of FFTFrames.
+ * The result of an FFT being computed for a single sampling window of an audio file
+ * <p>An {@link FFTResult} for a full audio file will contain an array of FFTFrames.</p>
  */
 public class FFTFrame {
 
@@ -17,9 +17,9 @@ public class FFTFrame {
     public long frameEndMs;
 
     /**
-     * An array of frequency bins.
-     * In a discrete Fourier transform, each bin represents a range of frequencies in Hz.
-     * A {@link FrequencyBin} contains the amplitude of this range from the original sound wave.
+     * An array of frequency bins
+     * <p>In a discrete Fourier transform, each bin represents a range of frequencies in Hz.
+     * A {@link FrequencyBin} contains the amplitude of this range from the original sound wave.</p>
      */
     public FrequencyBin[] bins;
 

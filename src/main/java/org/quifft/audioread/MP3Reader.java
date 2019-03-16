@@ -9,6 +9,9 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Audio reader to extract waveform data from MP3 files
+ */
 public class MP3Reader implements AudioReader {
 
     // Audio file being read

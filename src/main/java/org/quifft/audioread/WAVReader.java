@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * WAVReader extracts waveform data from .wav audio files.
+ * Audio reader to extract waveform data from WAV files
  */
 public class WAVReader implements AudioReader {
 

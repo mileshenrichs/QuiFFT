@@ -9,27 +9,30 @@ public class FFTParameters {
 
     /**
      * Number of samples taken from audio waveform for use in FFT.
-     * If numPoints is not defined, this must be a power of 2.
+     * <p>If numPoints is not defined, this must be a power of 2.
      * If numPoints is defined to be greater than window size, the signal will be
-     * padded with (numPoints - windowSize) zeroes.
+     * padded with (numPoints - windowSize) zeroes.</p>
      */
     public int windowSize = 4096;
 
     /**
      * Window function to be used.
-     * One of: rectangular, triangular, Hanning, Hamming
+     * <p>One of: rectangular, triangular, Hanning, Hamming</p>
      */
     public WindowFunction windowFunction = WindowFunction.RECTANGULAR;
 
     /**
-     * Overlap between adjacent sampled windows.
+     * Percentage of overlap between adjacent sampled windows.  Must be between 0 and 1.
+     * <p>Large window overlap percentages can dramatically increase the size of the FFT result
+     * because more FFT frames are calculated.  For example, if 75% overlap is used (windowOverlap = .75),
+     * there will be 4 times as many FFT frames computed than there would be with no overlap.</p>
      */
     public float windowOverlap = 0;
 
     /**
      * Number of points in the N-point FFT.
-     * If not defined, will default to the window size.
-     * If defined, must be greater than window size and be a power of 2.
+     * <p>If not defined, will default to the window size.
+     * If defined, must be greater than window size and be a power of 2.</p>
      */
     public int numPoints = -1;
 
@@ -40,7 +43,7 @@ public class FFTParameters {
 
     /**
      * If true, all frequency bin amplitudes will be in the range from 0.00 to 1.00,
-     * where 1.00 represents the maximum frequency amplitude amongst all amplitudes in the audio file.
+     * where 1.00 represents the maximum frequency amplitude amongst all amplitudes in the file.
      */
     public boolean isNormalized = true;
 
