@@ -136,7 +136,7 @@ public class Complex {
 
 
     // converts an array of double values to an array of Complex values (imaginary component always 0)
-    public static Complex[] convertDoubleToComplex(double[] d) {
+    public static Complex[] convertIntToComplex(int[] d) {
         Complex[] c = new Complex[d.length];
         for(int i = 0; i < c.length; i++) {
             c[i] = new Complex(d[i], 0.00);
