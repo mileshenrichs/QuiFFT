@@ -1,24 +1,17 @@
 package org.quifft.audioread;
 
-import org.quifft.util.DurationUtil;
+import org.tritonus.share.sampled.file.TAudioFileFormat;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.sound.sampled.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * Audio reader to extract waveform data from MP3 files
+ * <p><strong>Depends on: </strong>MP3SPI, JLayer, and Tritonus</p>
  */
-public class MP3Reader implements AudioReader {
-
-    // Audio file being read
-    private File audio;
-
-    // Input stream of audio file
-    private AudioInputStream inputStream;
+public class MP3Reader extends AudioReader {
 
     /**
      * The construction of a PCMReader opens an {@link AudioInputStream} for the .wav file.
@@ -30,31 +23,38 @@ public class MP3Reader implements AudioReader {
         this.audio = audio;
         getInputStream();
 
-        System.out.println("New PCMReader created with audio format: " + inputStream.getFormat().toString());
-    }
-
-    @Override
-    public int[] getWaveform() {
-        return new int[0];
-    }
-
-    @Override
-    public File getFile() {
-        return audio;
+        System.out.println("New MP3Reader created with audio format: " + inputStream.getFormat().toString());
     }
 
     @Override
     public long getFileDurationMs() {
-        return DurationUtil.getFileDurationMs(inputStream, audio);
-    }
+        AudioFileFormat fileFormat;
+        try {
+            fileFormat = AudioSystem.getAudioFileFormat(audio);
+        } catch (UnsupportedAudioFileException | IOException e) {
+            return 0L;
+        }
 
-    @Override
-    public AudioFormat getAudioFormat() {
-        return inputStream.getFormat();
+        if (fileFormat instanceof TAudioFileFormat) {
+            Map<?, ?> properties = fileFormat.properties();
+            Long microseconds = (Long) properties.get("duration");
+            return (long) ((double) microseconds / 1000.0);
+        }
+
+        return 0L;
     }
 
     private void getInputStream() throws IOException, UnsupportedAudioFileException {
-        this.inputStream = AudioSystem.getAudioInputStream(audio);
+        AudioInputStream in = AudioSystem.getAudioInputStream(audio);
+        AudioFormat baseFormat = in.getFormat();
+        AudioFormat decodedFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED,
+                baseFormat.getSampleRate(),
+                16,
+                baseFormat.getChannels(),
+                baseFormat.getChannels() * 2,
+                baseFormat.getSampleRate(),
+                false);
+        this.inputStream = AudioSystem.getAudioInputStream(decodedFormat, in);
     }
 
 }

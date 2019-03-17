@@ -52,6 +52,11 @@ public class QuiFFTTest {
         assertFalse(params.isNormalized);
     }
 
+    @Test(expected = Test.None.class)
+    public void Should_Successfully_Initialize_With_MP3_File() throws IOException, UnsupportedAudioFileException {
+        new QuiFFT(getAudioFile("600hz-tone-3secs.mp3"));
+    }
+
     private static File getAudioFile(String fileName) {
         Path currentPath = Paths.get(System.getProperty("user.dir"));
         Path filePath = Paths.get(currentPath.toString(), "src", "test", "resources", fileName);

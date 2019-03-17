@@ -29,7 +29,7 @@ public class QuiFFT {
      * Constructs a QuiFFT instance with an audio file
      * @param inputFile reference to audio file for which FFT will be performed
      * @throws IOException if an I/O exception occurs when the input stream is initialized
-     * @throws UnsupportedAudioFileException if the file is not a valid audio file or has bit depth > 16
+     * @throws UnsupportedAudioFileException if the file is not a valid audio file or has bit depth greater than 16
      */
     public QuiFFT(File inputFile) throws IOException, UnsupportedAudioFileException {
         this.audioReader = AudioReaderFactory.audioReaderFor(inputFile);
@@ -39,7 +39,7 @@ public class QuiFFT {
      * Constructs a QuiFFT instance with a String file name
      * @param fileName name of audio file for which FFT will be performed
      * @throws IOException if an I/O exception occurs when the input stream is initialized
-     * @throws UnsupportedAudioFileException if the file is not a valid audio file or has bit depth > 16
+     * @throws UnsupportedAudioFileException if the file is not a valid audio file or has bit depth greater than 16
      */
     public QuiFFT(String fileName) throws IOException, UnsupportedAudioFileException {
         this(new File(fileName));
