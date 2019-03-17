@@ -21,7 +21,7 @@ public class MP3Reader implements AudioReader {
     private AudioInputStream inputStream;
 
     /**
-     * The construction of a WAVReader opens an {@link AudioInputStream} for the .wav file.
+     * The construction of a PCMReader opens an {@link AudioInputStream} for the .wav file.
      * @param audio .wav file to be read
      * @throws IOException if an I/O exception occurs when the input stream is initialized
      * @throws UnsupportedAudioFileException if the file is not a valid audio file
@@ -30,7 +30,7 @@ public class MP3Reader implements AudioReader {
         this.audio = audio;
         getInputStream();
 
-        System.out.println("New WAVReader created with audio format: " + inputStream.getFormat().toString());
+        System.out.println("New PCMReader created with audio format: " + inputStream.getFormat().toString());
     }
 
     @Override

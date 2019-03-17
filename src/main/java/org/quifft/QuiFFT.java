@@ -29,7 +29,7 @@ public class QuiFFT {
      * Constructs a QuiFFT instance with an audio file
      * @param inputFile reference to audio file for which FFT will be performed
      * @throws IOException if an I/O exception occurs when the input stream is initialized
-     * @throws UnsupportedAudioFileException if the file is not a valid audio file
+     * @throws UnsupportedAudioFileException if the file is not a valid audio file or has bit depth > 16
      */
     public QuiFFT(File inputFile) throws IOException, UnsupportedAudioFileException {
         this.audioReader = AudioReaderFactory.audioReaderFor(inputFile);
@@ -39,7 +39,7 @@ public class QuiFFT {
      * Constructs a QuiFFT instance with a String file name
      * @param fileName name of audio file for which FFT will be performed
      * @throws IOException if an I/O exception occurs when the input stream is initialized
-     * @throws UnsupportedAudioFileException if the file is not a valid audio file
+     * @throws UnsupportedAudioFileException if the file is not a valid audio file or has bit depth > 16
      */
     public QuiFFT(String fileName) throws IOException, UnsupportedAudioFileException {
         this(new File(fileName));
@@ -87,7 +87,7 @@ public class QuiFFT {
      * @param overlapPercentage value between 0 and 1 representing window overlap percentage
      * @return current QuiFFT object with window overlap percentage parameter set
      */
-    public QuiFFT windowOverlap(float overlapPercentage) {
+    public QuiFFT windowOverlap(double overlapPercentage) {
         fftParameters.windowOverlap = overlapPercentage;
         return this;
     }
@@ -96,7 +96,7 @@ public class QuiFFT {
      * Get window overlap percentage parameter for FFT
      * @return window overlap percentage parameter for FFT
      */
-    public float windowOverlap() {
+    public double windowOverlap() {
         return fftParameters.windowOverlap;
     }
 
@@ -166,18 +166,29 @@ public class QuiFFT {
         fftResult.setMetadata(audioReader, fftParameters);
 
         int[] wave = audioReader.getWaveform();
-//        FFTFrame[] fftFrames = new FFTFrame[(wave.length / fftParameters.windowSize) + 1];
-        FFTFrame[] fftFrames = new FFTFrame[wave.length / fftParameters.windowSize];
+        int numFrames = (int) Math.ceil((double) wave.length / fftParameters.windowSize);
+        FFTFrame[] fftFrames = new FFTFrame[numFrames];
 
-        int i = 0;
         long currentAudioTimeMs = 0;
-        // todo: fix this loop so the last partial window (wave.length % windowSize) is captured
-        for(int s = fftParameters.windowSize; s < wave.length; s += fftParameters.windowSize) {
+        int s = fftParameters.windowSize;
+        for(int i = 0; i < fftFrames.length; i++) {
             int[] sampleWindow = new int[fftParameters.windowSize];
-            System.arraycopy(wave, s - fftParameters.windowSize, sampleWindow, 0, fftParameters.windowSize);
+            if(i < fftFrames.length - 1) {
+                System.arraycopy(wave, s - fftParameters.windowSize, sampleWindow, 0, fftParameters.windowSize);
+            } else {
+                int remaining = wave.length % fftParameters.windowSize;
+                System.arraycopy(wave, s - fftParameters.windowSize, sampleWindow, 0, remaining);
+            }
 
-            fftFrames[i++] = doFFT(sampleWindow, currentAudioTimeMs, fftResult.windowDurationMs);
+            fftFrames[i] = doFFT(sampleWindow, currentAudioTimeMs, fftResult.windowDurationMs);
             currentAudioTimeMs += fftResult.windowDurationMs;
+            s += fftParameters.windowSize;
+        }
+
+        // FFT on 8-bit audio makes error of having the amplitude of the first bin be extremely high
+        // This is corrected by giving the amplitude of the second bin to the first
+        if(audioReader.getAudioFormat().getSampleSizeInBits() == 8) {
+            fix8BitError(fftFrames);
         }
 
         if(fftParameters.isNormalized) {
@@ -223,6 +234,17 @@ public class QuiFFT {
             for(FrequencyBin bin : frame.bins) {
                 bin.amplitude /= maxAmp;
             }
+        }
+    }
+
+    /**
+     * For 8-bit audio, FFT always ends up incorrectly having an extremely high amplitude for the first frequency bin.
+     * This corrects the issue by setting the amplitude of the first frequency bin to the amplitude in the next bin.
+     * @param fftFrames array of frames obtained by FFT
+     */
+    private void fix8BitError(FFTFrame[] fftFrames) {
+        for(FFTFrame frame : fftFrames) {
+            frame.bins[0].amplitude = frame.bins[1].amplitude;
         }
     }
 

@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Audio reader to extract waveform data from WAV files
+ * Audio reader to extract waveform data from PCM-formatted files (WAV and AIFF)
  */
-public class WAVReader implements AudioReader {
+public class PCMReader implements AudioReader {
 
     // Audio file being read
     private File audio;
@@ -25,31 +25,34 @@ public class WAVReader implements AudioReader {
     private AudioInputStream inputStream;
 
     /**
-     * The construction of a WAVReader opens an {@link AudioInputStream} for the .wav file.
+     * The construction of a PCMReader opens an {@link AudioInputStream} for the .wav file.
      * @param audio .wav file to be read
      * @throws IOException if an I/O exception occurs when the input stream is initialized
      * @throws UnsupportedAudioFileException if the file is not a valid audio file
      */
-    public WAVReader(File audio) throws IOException, UnsupportedAudioFileException {
+    public PCMReader(File audio) throws IOException, UnsupportedAudioFileException {
         this.audio = audio;
         getInputStream();
 
-        System.out.println("New WAVReader created with audio format: " + inputStream.getFormat().toString());
+        System.out.println("New PCMReader created with audio format: " + inputStream.getFormat().toString());
     }
 
     @Override
     public int[] getWaveform() {
         List<Byte> bytes = getBytes();
+        int frameSize = inputStream.getFormat().getFrameSize();
 
-        int n = bytes.size() / 2;
+        int n = bytes.size() / frameSize;
         int[] wave = new int[n];
         int b = 0; // index into bytes list
 
         for(int i = 0; i < n; i++) {
-            ByteBuffer bb = ByteBuffer.allocate(2);
-            bb.order(ByteOrder.LITTLE_ENDIAN);
-            bb.put(bytes.get(b++));
-            bb.put(bytes.get(b++));
+            ByteBuffer bb = ByteBuffer.allocate(5);
+            bb.order(inputStream.getFormat().isBigEndian() ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN);
+            for(int j = 0; j < frameSize; j++) {
+                bb.put(bytes.get(b++));
+            }
+
             wave[i] = bb.getShort(0);
         }
 

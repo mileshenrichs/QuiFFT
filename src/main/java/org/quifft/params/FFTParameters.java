@@ -27,7 +27,7 @@ public class FFTParameters {
      * because more FFT frames are calculated.  For example, if 75% overlap is used (windowOverlap = .75),
      * there will be 4 times as many FFT frames computed than there would be with no overlap.</p>
      */
-    public float windowOverlap = 0;
+    public double windowOverlap = 0;
 
     /**
      * Number of points in the N-point FFT.
