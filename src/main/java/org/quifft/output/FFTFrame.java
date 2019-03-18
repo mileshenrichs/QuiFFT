@@ -9,12 +9,12 @@ public class FFTFrame {
     /**
      * Start time in milliseconds from the original audio file for the sampling window used to compute this frame
      */
-    public long frameStartMs;
+    public double frameStartMs;
 
     /**
      * End time in milliseconds from the original audio file for the sampling window used to compute this frame
      */
-    public long frameEndMs;
+    public double frameEndMs;
 
     /**
      * An array of frequency bins
@@ -23,7 +23,7 @@ public class FFTFrame {
      */
     public FrequencyBin[] bins;
 
-    public FFTFrame(long startMs, long endMs, FrequencyBin[] bins) {
+    public FFTFrame(double startMs, double endMs, FrequencyBin[] bins) {
         this.frameStartMs = startMs;
         this.frameEndMs = endMs;
         this.bins = bins;

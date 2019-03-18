@@ -169,7 +169,7 @@ public class QuiFFT {
         int numFrames = (int) Math.ceil((double) wave.length / fftParameters.windowSize);
         FFTFrame[] fftFrames = new FFTFrame[numFrames];
 
-        long currentAudioTimeMs = 0;
+        double currentAudioTimeMs = 0;
         int s = fftParameters.windowSize;
         for(int i = 0; i < fftFrames.length; i++) {
             int[] sampleWindow = new int[fftParameters.windowSize];
@@ -191,8 +191,14 @@ public class QuiFFT {
             fix8BitError(fftFrames);
         }
 
+        double maxAmplitude = findMaxAmplitude(fftFrames);
+
         if(fftParameters.isNormalized) {
-            normalizeFFTResult(fftFrames);
+            normalizeFFTResult(fftFrames, maxAmplitude);
+        }
+
+        if(fftParameters.isLogarithmic) {
+            scaleLogarithmically(fftFrames);
         }
 
         fftResult.fftFrames = fftFrames;
@@ -206,7 +212,7 @@ public class QuiFFT {
      * @param windowDurationMs duration of sample window in milliseconds
      * @return an FFT frame with the start and end time of this window and its frequency bins
      */
-    private FFTFrame doFFT(int[] wave, long startTimeMs, long windowDurationMs) {
+    private FFTFrame doFFT(int[] wave, double startTimeMs, double windowDurationMs) {
         // get complex FFT values
         Complex[] complexWave = Complex.convertIntToComplex(wave);
         Complex[] complexFFT = FFT.fft(complexWave);
@@ -228,8 +234,7 @@ public class QuiFFT {
      * Normalizes each bin amplitude by dividing all amplitudes by the max amplitude
      * @param fftFrames array of frames obtained by an FFT operation
      */
-    private void normalizeFFTResult(FFTFrame[] fftFrames) {
-        double maxAmp = findMaxAmplitude(fftFrames);
+    private void normalizeFFTResult(FFTFrame[] fftFrames, double maxAmp) {
         for(FFTFrame frame : fftFrames) {
             for(FrequencyBin bin : frame.bins) {
                 bin.amplitude /= maxAmp;
@@ -245,6 +250,14 @@ public class QuiFFT {
     private void fix8BitError(FFTFrame[] fftFrames) {
         for(FFTFrame frame : fftFrames) {
             frame.bins[0].amplitude = frame.bins[1].amplitude;
+        }
+    }
+
+    private void scaleLogarithmically(FFTFrame[] fftFrames) {
+        for(FFTFrame frame : fftFrames) {
+            for(FrequencyBin bin : frame.bins) {
+                bin.amplitude = 20 * Math.log10(bin.amplitude);
+            }
         }
     }
 

@@ -2,3 +2,4 @@
 *.iml
 target/
 src/main/javadoc
+src/main/resources

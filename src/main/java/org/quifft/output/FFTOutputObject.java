@@ -30,7 +30,7 @@ public abstract class FFTOutputObject {
      * Length of each sampling window in milliseconds
      * <p>This is proportional to the length of each window in terms of number of samples.</p>
      */
-    public long windowDurationMs;
+    public double windowDurationMs;
 
     /**
      * The parameters used to compute this FFT
@@ -51,7 +51,7 @@ public abstract class FFTOutputObject {
         this.frequencyResolution = reader.getAudioFormat().getSampleRate() / params.windowSize;
 
         double sampleLengthMs = 1 / format.getSampleRate() * 1000;
-        this.windowDurationMs = Math.round(sampleLengthMs * params.windowSize);
+        this.windowDurationMs = sampleLengthMs * params.windowSize;
 
         this.fftParameters = params;
     }
