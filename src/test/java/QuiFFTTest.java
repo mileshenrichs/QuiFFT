@@ -6,13 +6,11 @@ import org.quifft.params.FFTParameters;
 import org.quifft.params.WindowFunction;
 
 import static org.junit.Assert.*;
+import static util.TestUtils.*;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 
 public class QuiFFTTest {
 
@@ -55,12 +53,6 @@ public class QuiFFTTest {
     @Test(expected = Test.None.class)
     public void Should_Successfully_Initialize_With_MP3_File() throws IOException, UnsupportedAudioFileException {
         new QuiFFT(getAudioFile("600hz-tone-3secs.mp3"));
-    }
-
-    private static File getAudioFile(String fileName) {
-        Path currentPath = Paths.get(System.getProperty("user.dir"));
-        Path filePath = Paths.get(currentPath.toString(), "src", "test", "resources", fileName);
-        return filePath.toFile();
     }
 
 }
