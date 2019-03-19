@@ -40,7 +40,7 @@ public abstract class AudioReader implements Iterator<byte[]> {
         int b = 0; // index into bytes list
 
         for(int i = 0; i < n; i++) {
-            ByteBuffer bb = ByteBuffer.allocate(5);
+            ByteBuffer bb = ByteBuffer.allocate(2);
             bb.order(inputStream.getFormat().isBigEndian() ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN);
             for(int j = 0; j < frameSize; j++) {
                 bb.put(bytes[b++]);

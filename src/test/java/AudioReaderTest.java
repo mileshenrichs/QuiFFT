@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.IOException;
 
 import static org.junit.Assert.*;
-import static util.TestUtils.*;
+import static testutil.TestUtils.*;
 
 public class AudioReaderTest {
 

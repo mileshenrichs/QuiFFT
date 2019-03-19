@@ -37,9 +37,9 @@ public class FFTParameters {
     public int numPoints = -1;
 
     /**
-     * If true, amplitude of frequency bins will be scaled logarithmically instead of linearly
+     * If true, amplitude of frequency bins will be scaled logarithmically (decibels) instead of linearly
      */
-    public boolean isLogarithmic = false;
+    public boolean useDecibelScale = false;
 
     /**
      * If true, all frequency bin amplitudes will be in the range from 0.00 to 1.00,

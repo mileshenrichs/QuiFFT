@@ -122,21 +122,21 @@ public class QuiFFT {
     }
 
     /**
-     * Set whether the amplitudes of each frequency bin should be scaled logarithmically instead of linearly
-     * @param shouldBeLogarithmic true if amplitudes should be log scale, false for linear scale
+     * Set whether the amplitudes of each frequency bin should be scaled logarithmically (decibels) instead of linearly
+     * @param useDecibelScale true if amplitudes should be dB scale, false for linear scale
      * @return current QuiFFT object with amplitude scaling parameter set
      */
-    public QuiFFT logarithmic(boolean shouldBeLogarithmic) {
-        fftParameters.isLogarithmic = shouldBeLogarithmic;
+    public QuiFFT dBScale(boolean useDecibelScale) {
+        fftParameters.useDecibelScale = useDecibelScale;
         return this;
     }
 
     /**
      * Get amplitude scaling parameter for FFT
-     * @return true if amplitudes will be logarithmically scaled, false if they'll be on a linear scale
+     * @return true if amplitudes will be logarithmically scaled (decibels), false if they'll be on a linear scale
      */
-    public boolean logarithmic() {
-        return fftParameters.isLogarithmic;
+    public boolean dBScale() {
+        return fftParameters.useDecibelScale;
     }
 
     /**
@@ -192,13 +192,12 @@ public class QuiFFT {
         }
 
         double maxAmplitude = findMaxAmplitude(fftFrames);
+        System.out.println("max amplitude is " + maxAmplitude);
 
-        if(fftParameters.isNormalized) {
-            normalizeFFTResult(fftFrames, maxAmplitude);
-        }
-
-        if(fftParameters.isLogarithmic) {
+        if(fftParameters.useDecibelScale) {
             scaleLogarithmically(fftFrames);
+        } else if(fftParameters.isNormalized) {
+            normalizeFFTResult(fftFrames, maxAmplitude);
         }
 
         fftResult.fftFrames = fftFrames;
@@ -224,7 +223,8 @@ public class QuiFFT {
         // (FFT is symmetrical so any information after the halfway point is redundant)
         FrequencyBin[] bins = new FrequencyBin[complexFFT.length / 2];
         for(int i = 0; i < bins.length; i++) {
-            bins[i] = new FrequencyBin(i * frequencyAxisIncrement, complexFFT[i].abs());
+            double scaledBinAmplitude = 2 * complexFFT[i].abs() / fftParameters.windowSize;
+            bins[i] = new FrequencyBin(i * frequencyAxisIncrement, scaledBinAmplitude);
         }
 
         return new FFTFrame(startTimeMs, startTimeMs + windowDurationMs, bins);
@@ -254,9 +254,15 @@ public class QuiFFT {
     }
 
     private void scaleLogarithmically(FFTFrame[] fftFrames) {
+        // dB is a measure that compares an intensity (amplitude) to some reference intensity.
+        // This reference intensity should be the maximum possible intensity for the entire signal.
+        // For 8-bit audio, this intensity is 128.  For 16-bit (signed), this intensity is 32768.
+        int bitDepth = audioReader.getAudioFormat().getSampleSizeInBits();
+        int maxIntensity = bitDepth == 8 ? 128 : 32768;
+
         for(FFTFrame frame : fftFrames) {
             for(FrequencyBin bin : frame.bins) {
-                bin.amplitude = 20 * Math.log10(bin.amplitude);
+                bin.amplitude = 10 * Math.log10(bin.amplitude / maxIntensity);
             }
         }
     }
