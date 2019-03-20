@@ -1,7 +1,7 @@
 package org.quifft.params;
 
 /**
- * The type of window function to be used for extracting subsequences of audio waveform for FFTs
+ * The type of window function to be applied to each section of waveform before computing its FFT
  */
 public enum WindowFunction {
 
@@ -16,6 +16,11 @@ public enum WindowFunction {
     TRIANGULAR,
 
     /**
+     * A Bartlett window (triangular window with zeroes on each end)
+     */
+    BARTLETT,
+
+    /**
      * A Hann (or Hanning) window
      */
     HANNING,
@@ -23,5 +28,10 @@ public enum WindowFunction {
     /**
      * A Hamming window
      */
-    HAMMING
+    HAMMING,
+
+    /**
+     * A Blackman window
+     */
+    BLACKMAN
 }

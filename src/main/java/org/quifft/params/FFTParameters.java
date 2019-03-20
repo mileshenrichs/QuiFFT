@@ -17,7 +17,7 @@ public class FFTParameters {
 
     /**
      * Window function to be used
-     * <p>One of: rectangular, triangular, Hanning, Hamming</p>
+     * <p>One of: rectangular, triangular, Bartlett, Hanning, Hamming, Blackman</p>
      */
     public WindowFunction windowFunction = WindowFunction.RECTANGULAR;
 
