@@ -7,7 +7,9 @@ import org.quifft.fft.FFT;
 import org.quifft.output.FFTFrame;
 import org.quifft.output.FFTResult;
 import org.quifft.output.FrequencyBin;
+import org.quifft.output.BadParametersException;
 import org.quifft.params.FFTParameters;
+import org.quifft.params.ParameterValidator;
 import org.quifft.params.WindowFunction;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -15,7 +17,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Class used by the client to do an FFT on an audio file
+ * Class used by the client to compute an FFT for an audio file
  */
 public class QuiFFT {
 
@@ -159,9 +161,12 @@ public class QuiFFT {
 
     /**
      * Performs an FFT for the entirety of the audio file
+     * @throws BadParametersException if there are any invalid FFT parameters set
      * @return an FFT result containing metadata of this FFT and an array of all {@link FFTFrame}s computed
      */
     public FFTResult fullFFT() {
+        ParameterValidator.validateFFTParameters(fftParameters);
+
         FFTResult fftResult = new FFTResult();
         fftResult.setMetadata(audioReader, fftParameters);
 
@@ -263,6 +268,9 @@ public class QuiFFT {
         for(FFTFrame frame : fftFrames) {
             for(FrequencyBin bin : frame.bins) {
                 bin.amplitude = 10 * Math.log10(bin.amplitude / maxIntensity);
+
+                // establish -100 dB floor (avoid infinitely negative values)
+                bin.amplitude = Math.max(bin.amplitude, -100);
             }
         }
     }

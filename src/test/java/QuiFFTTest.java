@@ -59,7 +59,7 @@ public class QuiFFTTest {
         assertEquals(8192, params.windowSize);
         assertEquals(WindowFunction.HANNING, params.windowFunction);
         assertEquals(0.25, params.windowOverlap, 0);
-        assertEquals(1024, params.numPoints);
+        assertEquals(1024, (int) params.numPoints);
         assertTrue(params.useDecibelScale);
         assertFalse(params.isNormalized);
     }

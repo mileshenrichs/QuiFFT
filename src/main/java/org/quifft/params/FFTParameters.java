@@ -34,16 +34,24 @@ public class FFTParameters {
      * <p>If not defined, will default to the window size.
      * If defined, must be greater than window size and be a power of 2.</p>
      */
-    public int numPoints = -1;
+    public Integer numPoints = null;
 
     /**
      * If true, amplitude of frequency bins will be scaled logarithmically (decibels) instead of linearly
+     * <p>The decibel scale describes the amplitude of a sound relative to some reference value.
+     * In the case of digital audio, this reference value is the maximum possible amplitude value that can be
+     * represented at a given bit depth.  Since each value will be compared to the maximum possible, most or all
+     * of the dB readings will be less than 0.  No sound at all is typically represented by negative infinity,
+     * but QuiFFT sets a floor of -100 dB to avoid infinite values.</p>
+     * <p>Therefore, if a decibel scale is used, bin amplitudes will be in the range [-100.0, 0.0].</p>
      */
     public boolean useDecibelScale = false;
 
     /**
      * If true, all frequency bin amplitudes will be in the range from 0.00 to 1.00,
      * where 1.00 represents the maximum frequency amplitude amongst all amplitudes in the file.
+     * <p>If {@code useDecibelScale} is set to true, the value of {@code isNormalized} doesn't
+     * matter because the decibel scale is normalized by definition.</p>
      */
     public boolean isNormalized = true;
 
