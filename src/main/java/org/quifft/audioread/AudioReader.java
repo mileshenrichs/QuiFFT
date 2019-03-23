@@ -5,6 +5,8 @@ import org.quifft.output.FFTStream;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -28,21 +30,40 @@ public abstract class AudioReader implements Iterator<byte[]> {
     AudioInputStream inputStream;
 
     /**
+     * Decodes audio reader's input stream to a target format with bit depth of 16
+     * <p>This is used when the input file is an 8-bit WAV or an MP3.</p>
+     * @throws IOException if an I/O exception occurs when the input stream is initialized
+     * @throws UnsupportedAudioFileException if the file is not a valid audio file or has bit depth greater than 16
+     */
+    void getInputStreamAs8Bit() throws IOException, UnsupportedAudioFileException {
+        AudioInputStream in = AudioSystem.getAudioInputStream(audio);
+        AudioFormat baseFormat = in.getFormat();
+        AudioFormat decodedFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED,
+                baseFormat.getSampleRate(),
+                16,
+                baseFormat.getChannels(),
+                baseFormat.getChannels() * 2,
+                baseFormat.getSampleRate(),
+                false);
+        this.inputStream = AudioSystem.getAudioInputStream(decodedFormat, in);
+    }
+
+    /**
      * Obtains waveform for entirety of audio file
      * @return waveform for entirety of audio file
      */
     public int[] getWaveform() {
         byte[] bytes = getBytes();
-        int frameSize = inputStream.getFormat().getFrameSize();
+        final int BYTES_PER_SAMPLE = 2; // audio always converted to 16-bit, so each sample is represented by 2 bytes
 
-        int n = bytes.length / frameSize;
+        int n = bytes.length / BYTES_PER_SAMPLE;
         int[] wave = new int[n];
         int b = 0; // index into bytes list
 
         for(int i = 0; i < n; i++) {
             ByteBuffer bb = ByteBuffer.allocate(2);
             bb.order(inputStream.getFormat().isBigEndian() ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN);
-            for(int j = 0; j < frameSize; j++) {
+            for(int j = 0; j < BYTES_PER_SAMPLE; j++) {
                 bb.put(bytes[b++]);
             }
 

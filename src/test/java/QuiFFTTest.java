@@ -21,10 +21,10 @@ public class QuiFFTTest {
         FFTResult result = null;
 
         try {
-//            File audio = getAudioFile("600hz-tone-3secs.wav");
-//            QuiFFT quiFFT = new QuiFFT(audio).windowSize(512).windowFunction(WindowFunction.HANNING)
-//                    .windowOverlap(0.25).numPoints(1024).dBScale(true).normalized(false);
-//            result = quiFFT.fullFFT();
+            File audio = getAudioFile("600hz-tone-3secs.wav");
+            QuiFFT quiFFT = new QuiFFT(audio).windowSize(512).windowFunction(WindowFunction.HANNING)
+                    .windowOverlap(0.25).numPoints(1024).dBScale(true).normalized(false);
+            result = quiFFT.fullFFT();
 
 //            System.out.println("\n");
 //            doFFTForSong("flexing-on-purpose-mono.wav");
@@ -45,11 +45,6 @@ public class QuiFFTTest {
         System.out.println(songFileName);
         FFTResult result = new QuiFFT(getAudioFile(songFileName)).windowSize(8192).dBScale(true).normalized(false).fullFFT();
         System.out.println();
-    }
-
-    @Test
-    public void test() throws IOException, UnsupportedAudioFileException {
-        doFFTForSong("re-up-mono-8.wav");
     }
 
     @Test(expected = UnsupportedAudioFileException.class)

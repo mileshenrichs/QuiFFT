@@ -45,16 +45,7 @@ public class MP3Reader extends AudioReader {
     }
 
     private void getInputStream() throws IOException, UnsupportedAudioFileException {
-        AudioInputStream in = AudioSystem.getAudioInputStream(audio);
-        AudioFormat baseFormat = in.getFormat();
-        AudioFormat decodedFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED,
-                baseFormat.getSampleRate(),
-                16,
-                baseFormat.getChannels(),
-                baseFormat.getChannels() * 2,
-                baseFormat.getSampleRate(),
-                false);
-        this.inputStream = AudioSystem.getAudioInputStream(decodedFormat, in);
+        getInputStreamAs8Bit();
     }
 
 }

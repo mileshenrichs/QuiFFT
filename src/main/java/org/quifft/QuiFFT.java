@@ -173,11 +173,6 @@ public class QuiFFT {
 
         int[] wave = audioReader.getWaveform();
 
-        for(int i = 100000; i < 200000; i++) {
-            System.out.print(wave[i] + " ");
-        }
-        System.out.println();
-
         int numFrames = (int) Math.ceil((double) wave.length / fftParameters.windowSize);
         FFTFrame[] fftFrames = new FFTFrame[numFrames];
 
@@ -261,13 +256,12 @@ public class QuiFFT {
     private void scaleLogarithmically(FFTFrame[] fftFrames) {
         // dB is a measure that compares an intensity (amplitude) to some reference intensity.
         // This reference intensity should be the maximum possible intensity for the entire signal.
-        // For 8-bit audio, this intensity is 128.  For 16-bit (signed), this intensity is 32768.
-        int bitDepth = audioReader.getAudioFormat().getSampleSizeInBits();
-        int maxIntensity = bitDepth == 8 ? 128 : 32768;
+        // For 16-bit signed audio, this intensity is 32768.
+        final int MAX_INTENSITY = 32768;
 
         for(FFTFrame frame : fftFrames) {
             for(FrequencyBin bin : frame.bins) {
-                bin.amplitude = 10 * Math.log10(bin.amplitude / maxIntensity);
+                bin.amplitude = 10 * Math.log10(bin.amplitude / MAX_INTENSITY);
 
                 // establish -100 dB floor (avoid infinitely negative values)
                 bin.amplitude = Math.max(bin.amplitude, -100);

@@ -35,6 +35,11 @@ public class PCMReader extends AudioReader {
     }
 
     private void getInputStream() throws IOException, UnsupportedAudioFileException {
-        this.inputStream = AudioSystem.getAudioInputStream(audio);
+        inputStream = AudioSystem.getAudioInputStream(audio);
+
+        // convert 8-bit audio into 16-bit
+        if(inputStream.getFormat().getSampleSizeInBits() == 8) {
+            getInputStreamAs8Bit();
+        }
     }
 }
