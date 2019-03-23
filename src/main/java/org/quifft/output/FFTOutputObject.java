@@ -48,11 +48,28 @@ public abstract class FFTOutputObject {
         this.fileDurationMs = reader.getFileDurationMs();
 
         AudioFormat format = reader.getAudioFormat();
-        this.frequencyResolution = reader.getAudioFormat().getSampleRate() / params.windowSize;
+        this.frequencyResolution = reader.getAudioFormat().getSampleRate() / params.totalWindowLength();
 
         double sampleLengthMs = 1 / format.getSampleRate() * 1000;
         this.windowDurationMs = sampleLengthMs * params.windowSize;
 
         this.fftParameters = params;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("== ").append(this instanceof FFTResult ? "FFTResult" : "FFTStream").append(" ==========================\n");
+        builder.append(String.format("File: %s\n", fileName));
+        builder.append(String.format("Frequency resolution: %.3f Hz\n", frequencyResolution));
+        builder.append(String.format("Window duration: %.1f ms\n", windowDurationMs));
+        builder.append(String.format("Number of points in FFT: %d", fftParameters.windowSize));
+        if(fftParameters.numPoints != null) {
+            builder.append(String.format(" window size + %d zero-padding = %d", fftParameters.zeroPadLength(), fftParameters.numPoints));
+        }
+        builder.append(" points");
+
+        builder.append("\n");
+        return builder.toString();
     }
 }

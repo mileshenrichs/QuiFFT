@@ -1,6 +1,6 @@
 import org.junit.Test;
 import org.quifft.params.WindowFunction;
-import org.quifft.params.WindowGenerator;
+import org.quifft.params.WindowFunctionGenerator;
 
 import static org.junit.Assert.*;
 
@@ -24,46 +24,46 @@ public class WindowGenerationTest {
 
     @Test
     public void Triangular_Window() {
-        double[] window = WindowGenerator.generateWindow(14, WindowFunction.TRIANGULAR);
+        double[] window = WindowFunctionGenerator.generateWindow(14, WindowFunction.TRIANGULAR);
         assertArrayEquals(triang14, window, 0.001);
 
-        window = WindowGenerator.generateWindow(15, WindowFunction.TRIANGULAR);
+        window = WindowFunctionGenerator.generateWindow(15, WindowFunction.TRIANGULAR);
         assertArrayEquals(triang15, window, 0.001);
     }
 
     @Test
     public void Bartlett_Window() {
-        double[] window = WindowGenerator.generateWindow(14, WindowFunction.BARTLETT);
+        double[] window = WindowFunctionGenerator.generateWindow(14, WindowFunction.BARTLETT);
         assertArrayEquals(bartlett14, window, 0.001);
 
-        window = WindowGenerator.generateWindow(15, WindowFunction.BARTLETT);
+        window = WindowFunctionGenerator.generateWindow(15, WindowFunction.BARTLETT);
         assertArrayEquals(bartlett15, window, 0.001);
     }
 
     @Test
     public void Hanning_Window() {
-        double[] window = WindowGenerator.generateWindow(14, WindowFunction.HANNING);
+        double[] window = WindowFunctionGenerator.generateWindow(14, WindowFunction.HANNING);
         assertArrayEquals(hann14, window, 0.001);
 
-        window = WindowGenerator.generateWindow(15, WindowFunction.HANNING);
+        window = WindowFunctionGenerator.generateWindow(15, WindowFunction.HANNING);
         assertArrayEquals(hann15, window, 0.001);
     }
 
     @Test
     public void Hamming_Window() {
-        double[] window = WindowGenerator.generateWindow(14, WindowFunction.HAMMING);
+        double[] window = WindowFunctionGenerator.generateWindow(14, WindowFunction.HAMMING);
         assertArrayEquals(hamming14, window, 0.001);
 
-        window = WindowGenerator.generateWindow(15, WindowFunction.HAMMING);
+        window = WindowFunctionGenerator.generateWindow(15, WindowFunction.HAMMING);
         assertArrayEquals(hamming15, window, 0.001);
     }
 
     @Test
     public void Blackman_Window() {
-        double[] window = WindowGenerator.generateWindow(14, WindowFunction.BLACKMAN);
+        double[] window = WindowFunctionGenerator.generateWindow(14, WindowFunction.BLACKMAN);
         assertArrayEquals(blackman14, window, 0.001);
 
-        window = WindowGenerator.generateWindow(15, WindowFunction.BLACKMAN);
+        window = WindowFunctionGenerator.generateWindow(15, WindowFunction.BLACKMAN);
         assertArrayEquals(blackman15, window, 0.001);
     }
 

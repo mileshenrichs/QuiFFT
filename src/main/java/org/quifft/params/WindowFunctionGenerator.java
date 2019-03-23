@@ -6,7 +6,7 @@ import java.util.Arrays;
  * Generates coefficients for various windowing functions based on
  * <a href="https://www.mathworks.com/help/dsp/ref/windowfunction.html">MATLAB implementations</a>
  */
-public class WindowGenerator {
+public class WindowFunctionGenerator {
 
     /**
      * Generates coefficients for a window of specified length and type

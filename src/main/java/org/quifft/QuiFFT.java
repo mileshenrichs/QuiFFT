@@ -11,6 +11,7 @@ import org.quifft.output.BadParametersException;
 import org.quifft.params.FFTParameters;
 import org.quifft.params.ParameterValidator;
 import org.quifft.params.WindowFunction;
+import org.quifft.sampling.SampleWindowExtractor;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
@@ -171,23 +172,24 @@ public class QuiFFT {
         fftResult.setMetadata(audioReader, fftParameters);
 
         int[] wave = audioReader.getWaveform();
+
+        for(int i = 100000; i < 200000; i++) {
+            System.out.print(wave[i] + " ");
+        }
+        System.out.println();
+
         int numFrames = (int) Math.ceil((double) wave.length / fftParameters.windowSize);
         FFTFrame[] fftFrames = new FFTFrame[numFrames];
 
+        SampleWindowExtractor windowExtractor = new SampleWindowExtractor(wave,
+                fftParameters.windowSize, fftParameters.windowFunction, fftParameters.zeroPadLength());
         double currentAudioTimeMs = 0;
-        int s = fftParameters.windowSize;
         for(int i = 0; i < fftFrames.length; i++) {
-            int[] sampleWindow = new int[fftParameters.windowSize];
-            if(i < fftFrames.length - 1) {
-                System.arraycopy(wave, s - fftParameters.windowSize, sampleWindow, 0, fftParameters.windowSize);
-            } else {
-                int remaining = wave.length % fftParameters.windowSize;
-                System.arraycopy(wave, s - fftParameters.windowSize, sampleWindow, 0, remaining);
-            }
+            // sampleWindow is input to FFT -- may be zero-padded if numPoints > windowSize
+            int[] sampleWindow = windowExtractor.extractWindow(i);
 
             fftFrames[i] = doFFT(sampleWindow, currentAudioTimeMs, fftResult.windowDurationMs);
             currentAudioTimeMs += fftResult.windowDurationMs;
-            s += fftParameters.windowSize;
         }
 
         // FFT on 8-bit audio makes error of having the amplitude of the first bin be extremely high
@@ -196,12 +198,10 @@ public class QuiFFT {
             fix8BitError(fftFrames);
         }
 
-        double maxAmplitude = findMaxAmplitude(fftFrames);
-        System.out.println("max amplitude is " + maxAmplitude);
-
         if(fftParameters.useDecibelScale) {
             scaleLogarithmically(fftFrames);
         } else if(fftParameters.isNormalized) {
+            double maxAmplitude = findMaxAmplitude(fftFrames);
             normalizeFFTResult(fftFrames, maxAmplitude);
         }
 

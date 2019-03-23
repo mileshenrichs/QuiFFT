@@ -22,7 +22,9 @@ public class ParameterValidator {
         // window size must be a power of 2 if num points is not set
         if(params.numPoints == null && !isPow2(params.windowSize))
             throw new BadParametersException(String.format("If number of points is not set, window size must be a " +
-                    "power of 2; was set to %d", params.windowSize));
+                    "power of 2; was set to %1$d. \nIf you'd like to use a window of size %1$d, " +
+                    "set numPoints to the next power of 2 greater than %1$d so the signal will " +
+                    "be zero-padded up to that length.", params.windowSize));
 
         // window function cannot be null
         if(params.windowFunction == null)
