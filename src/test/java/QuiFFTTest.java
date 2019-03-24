@@ -2,6 +2,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.quifft.QuiFFT;
 import org.quifft.output.FFTResult;
+import org.quifft.output.FrequencyBin;
 import org.quifft.params.FFTParameters;
 import org.quifft.params.WindowFunction;
 
@@ -65,6 +66,11 @@ public class QuiFFTTest {
     }
 
     @Test(expected = Test.None.class)
+    public void Should_Successfully_Initialize_Given_String_Pathname() throws IOException, UnsupportedAudioFileException {
+        new QuiFFT("src/test/resources/600hz-tone-3secs-mono.wav");
+    }
+
+    @Test(expected = Test.None.class)
     public void Should_Successfully_Initialize_With_MP3_File() throws IOException, UnsupportedAudioFileException {
         new QuiFFT(TestUtils.getAudioFile("600hz-tone-3secs-mono.mp3"));
     }
@@ -93,6 +99,12 @@ public class QuiFFTTest {
     }
 
     @Test
+    public void Should_Call_ToString_On_Result_Without_Error() throws IOException, UnsupportedAudioFileException {
+        File audio = TestUtils.getAudioFile("600hz-tone-3secs-mono.wav");
+        assertNotNull(new QuiFFT(audio).fullFFT().toString());
+    }
+
+    @Test
     public void Should_Keep_WAV_Metadata_Equal_Whether_Stereo_Or_Mono() throws IOException, UnsupportedAudioFileException {
         File stereo = TestUtils.getAudioFile("600hz-tone-3secs-stereo.wav");
         File mono = TestUtils.getAudioFile("600hz-tone-3secs-mono.wav");
@@ -114,6 +126,74 @@ public class QuiFFTTest {
         assertEquals(stereoResult.fileDurationMs, monoResult.fileDurationMs);
         assertEquals(stereoResult.fftFrames.length, monoResult.fftFrames.length);
         assertEquals(stereoResult.fftFrames[0].frameEndMs, monoResult.fftFrames[0].frameEndMs, 0.001);
+    }
+
+    @Test
+    public void Should_Compute_Peak_At_500Hz_For_500Hz_Stereo_WAV_Signal() throws IOException, UnsupportedAudioFileException {
+        File inputFile = TestUtils.getAudioFile("500hz-tone-3secs-stereo.wav");
+        FFTResult result = new QuiFFT(inputFile).dBScale(true).fullFFT();
+
+        double maxAmplitude = -100;
+        double maxFrequencyBin = 0;
+        for(FrequencyBin bin : result.fftFrames[0].bins) {
+            if(bin.amplitude > maxAmplitude) {
+                maxAmplitude = bin.amplitude;
+                maxFrequencyBin = bin.frequency;
+            }
+        }
+
+        assertEquals(500, maxFrequencyBin, result.frequencyResolution);
+    }
+
+    @Test
+    public void Should_Compute_Peak_At_500Hz_For_500Hz_Mono_WAV_Signal() throws IOException, UnsupportedAudioFileException {
+        File inputFile = TestUtils.getAudioFile("500hz-tone-3secs-mono.wav");
+        FFTResult result = new QuiFFT(inputFile).dBScale(true).fullFFT();
+
+        double maxAmplitude = -100;
+        double maxFrequencyBin = 0;
+        for(FrequencyBin bin : result.fftFrames[0].bins) {
+            if(bin.amplitude > maxAmplitude) {
+                maxAmplitude = bin.amplitude;
+                maxFrequencyBin = bin.frequency;
+            }
+        }
+
+        assertEquals(500, maxFrequencyBin, result.frequencyResolution);
+    }
+
+    @Test
+    public void Should_Compute_Peak_At_500Hz_For_500Hz_Stereo_MP3_Signal() throws IOException, UnsupportedAudioFileException {
+        File inputFile = TestUtils.getAudioFile("500hz-tone-3secs-stereo.mp3");
+        FFTResult result = new QuiFFT(inputFile).dBScale(true).fullFFT();
+
+        double maxAmplitude = -100;
+        double maxFrequencyBin = 0;
+        for(FrequencyBin bin : result.fftFrames[0].bins) {
+            if(bin.amplitude > maxAmplitude) {
+                maxAmplitude = bin.amplitude;
+                maxFrequencyBin = bin.frequency;
+            }
+        }
+
+        assertEquals(500, maxFrequencyBin, result.frequencyResolution);
+    }
+
+    @Test
+    public void Should_Compute_Peak_At_500Hz_For_500Hz_Mono_MP3_Signal() throws IOException, UnsupportedAudioFileException {
+        File inputFile = TestUtils.getAudioFile("500hz-tone-3secs-mono.mp3");
+        FFTResult result = new QuiFFT(inputFile).dBScale(true).fullFFT();
+
+        double maxAmplitude = -100;
+        double maxFrequencyBin = 0;
+        for(FrequencyBin bin : result.fftFrames[0].bins) {
+            if(bin.amplitude > maxAmplitude) {
+                maxAmplitude = bin.amplitude;
+                maxFrequencyBin = bin.frequency;
+            }
+        }
+
+        assertEquals(500, maxFrequencyBin, result.frequencyResolution);
     }
 
 }
