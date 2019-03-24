@@ -171,13 +171,14 @@ public class QuiFFT {
         FFTResult fftResult = new FFTResult();
         fftResult.setMetadata(audioReader, fftParameters);
 
+        boolean isStereo = audioReader.getAudioFormat().getChannels() == 2;
         int[] wave = audioReader.getWaveform();
 
-        int numFrames = (int) Math.ceil((double) wave.length / fftParameters.windowSize);
+        int lengthOfWave = wave.length / (isStereo ? 2 : 1);
+        int numFrames = (int) Math.ceil((double) lengthOfWave / fftParameters.windowSize);
         FFTFrame[] fftFrames = new FFTFrame[numFrames];
-
-        SampleWindowExtractor windowExtractor = new SampleWindowExtractor(wave,
-                fftParameters.windowSize, fftParameters.windowFunction, fftParameters.zeroPadLength());
+        SampleWindowExtractor windowExtractor = new SampleWindowExtractor(wave, isStereo, fftParameters.windowSize,
+                fftParameters.windowFunction, fftParameters.zeroPadLength());
         double currentAudioTimeMs = 0;
         for(int i = 0; i < fftFrames.length; i++) {
             // sampleWindow is input to FFT -- may be zero-padded if numPoints > windowSize
@@ -185,12 +186,6 @@ public class QuiFFT {
 
             fftFrames[i] = doFFT(sampleWindow, currentAudioTimeMs, fftResult.windowDurationMs);
             currentAudioTimeMs += fftResult.windowDurationMs;
-        }
-
-        // FFT on 8-bit audio makes error of having the amplitude of the first bin be extremely high
-        // This is corrected by giving the amplitude of the second bin to the first
-        if(audioReader.getAudioFormat().getSampleSizeInBits() == 8) {
-            fix8BitError(fftFrames);
         }
 
         if(fftParameters.useDecibelScale) {
@@ -242,20 +237,9 @@ public class QuiFFT {
         }
     }
 
-    /**
-     * For 8-bit audio, FFT always ends up incorrectly having an extremely high amplitude for the first frequency bin.
-     * This corrects the issue by setting the amplitude of the first frequency bin to the amplitude in the next bin.
-     * @param fftFrames array of frames obtained by FFT
-     */
-    private void fix8BitError(FFTFrame[] fftFrames) {
-        for(FFTFrame frame : fftFrames) {
-            frame.bins[0].amplitude = frame.bins[1].amplitude;
-        }
-    }
-
     private void scaleLogarithmically(FFTFrame[] fftFrames) {
         // dB is a measure that compares an intensity (amplitude) to some reference intensity.
-        // This reference intensity should be the maximum possible intensity for the entire signal.
+        // This reference intensity should be the maximum possible intensity for any sample in the entire signal.
         // For 16-bit signed audio, this intensity is 32768.
         final int MAX_INTENSITY = 32768;
 

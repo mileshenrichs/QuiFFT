@@ -6,11 +6,9 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
 
-import static testutil.TestUtils.*;
-
 public class ParameterValidationTest {
 
-    private static File audioFile = getAudioFile("600hz-tone-3secs.wav");
+    private static File audioFile = TestUtils.getAudioFile("600hz-tone-3secs-mono.wav");
 
     @Test(expected = BadParametersException.class)
     public void Window_Size_Is_Negative() throws IOException, UnsupportedAudioFileException {

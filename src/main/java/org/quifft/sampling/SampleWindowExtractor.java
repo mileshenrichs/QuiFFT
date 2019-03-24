@@ -3,10 +3,18 @@ package org.quifft.sampling;
 import org.quifft.params.WindowFunction;
 import org.quifft.params.WindowFunctionGenerator;
 
+/**
+ * Applies zero-padding and smoothing functions to extract sample windows from a longer waveform
+ * @see org.quifft.params.FFTParameters
+ * @see WindowFunction
+ */
 public class SampleWindowExtractor {
 
     // full-length waveform of original audio file
     private int[] wave;
+
+    // true if signal is stereo (2 channels), false if mono
+    private boolean isStereo;
 
     // size of window as defined by FFT parameters (excludes zero-padding)
     private int windowSize;
@@ -27,17 +35,21 @@ public class SampleWindowExtractor {
      * @param windowFunction windowing function to be applied to input signal
      * @param zeroPadLength number of zeroes to be appended to windowed signal
      */
-    public SampleWindowExtractor(int[] wave, int windowSize, WindowFunction windowFunction, int zeroPadLength) {
+    public SampleWindowExtractor(int[] wave, boolean isStereo, int windowSize, WindowFunction windowFunction, int zeroPadLength) {
         this.wave = wave;
+        this.isStereo = isStereo;
         this.windowSize = windowSize;
         this.windowFunction = windowFunction;
         this.zeroPadLength = zeroPadLength;
 
-        this.numFrames = (int) Math.ceil((double) wave.length / windowSize);
+        // length of wave in number of samples (factors in whether wave is stereo or mono)
+        int lengthOfWave = wave.length / (isStereo ? 2 : 1);
+        this.numFrames = (int) Math.ceil((double) lengthOfWave / windowSize);
     }
 
     /**
      * Extracts the {@code i}th sampling window from a full-length waveform
+     * <p>If is stereo signal, adjacent values will be averaged to produce mono samples</p>
      * @param i index of window to be extracted
      * @return a single window extracted from full-length audio waveform
      */
@@ -46,12 +58,27 @@ public class SampleWindowExtractor {
 
         // copy section of original waveform into sample array
         int s = windowSize * (i + 1);
-        if(i < numFrames - 1) {
-            System.arraycopy(wave, s - windowSize, window, 0, windowSize);
-        } else {
-            int remaining = wave.length % windowSize;
+        if(isStereo) s *= 2;
+
+        if(isStereo) {
+            int remaining = windowSize;
+            if(i == numFrames - 1) remaining = (wave.length % windowSize) / 2;
             if(remaining == 0) remaining = windowSize;
-            System.arraycopy(wave, s - windowSize, window, 0, remaining);
+
+            int j = s - (windowSize * 2);
+            for(int k = 0; k < remaining; k++) {
+                // average adjacent L (left) and R (right) samples together to produce mono sample
+                window[k] = (int) Math.round((wave[j] + wave[j + 1]) / 2.0);
+                j += 2;
+            }
+        } else {
+            if(i < numFrames - 1) {
+                System.arraycopy(wave, s - windowSize, window, 0, windowSize);
+            } else {
+                int remaining = wave.length % windowSize;
+                if(remaining == 0) remaining = windowSize;
+                System.arraycopy(wave, s - windowSize, window, 0, remaining);
+            }
         }
 
         // apply windowing function to extracted sample

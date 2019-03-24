@@ -31,7 +31,7 @@ public class PCMReader extends AudioReader {
         long audioFileLength = audio.length();
         int frameSize = format.getFrameSize();
         float frameRate = format.getFrameRate();
-        return Math.round((audioFileLength / (frameSize * frameRate)) * 1000);
+        return (long) Math.ceil((audioFileLength / (frameSize * frameRate)) * 1000);
     }
 
     private void getInputStream() throws IOException, UnsupportedAudioFileException {

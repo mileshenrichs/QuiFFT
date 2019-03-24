@@ -49,7 +49,7 @@ public class FFTParameters {
 
     /**
      * If true, all frequency bin amplitudes will be in the range from 0.00 to 1.00,
-     * where 1.00 represents the maximum frequency amplitude amongst all amplitudes in the file.
+     * where 1.00 represents the maximum frequency amplitude amongst all amplitudes in the file
      * <p>If {@code useDecibelScale} is set to true, the value of {@code isNormalized} doesn't
      * matter because the decibel scale is normalized by definition.</p>
      */

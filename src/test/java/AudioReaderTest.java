@@ -7,11 +7,10 @@ import java.io.File;
 import java.io.IOException;
 
 import static org.junit.Assert.*;
-import static testutil.TestUtils.*;
 
 public class AudioReaderTest {
 
-    private static File testAudio = getAudioFile("600hz-tone-3secs.wav");
+    private static File testAudio = TestUtils.getAudioFile("600hz-tone-3secs-mono.wav");
 
     @Test
     public void Should_Extract_Correct_Number_Of_Samples_From_WAV() throws IOException, UnsupportedAudioFileException {
