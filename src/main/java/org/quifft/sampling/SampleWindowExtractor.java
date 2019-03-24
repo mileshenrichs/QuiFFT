@@ -1,6 +1,7 @@
 package org.quifft.sampling;
 
 import org.quifft.params.WindowFunction;
+import org.quifft.params.WindowFunctionGenerator;
 
 public class SampleWindowExtractor {
 
@@ -19,6 +20,13 @@ public class SampleWindowExtractor {
     // number of frames in complete FFT; computed from wave length and window size
     private int numFrames;
 
+    /**
+     * Constructs a SampleWindowExtractor to take windows from an input signal for use in FFTs
+     * @param wave full-length waveform of original audio file
+     * @param windowSize size of window as defined by FFT parameters (excludes zero-padding)
+     * @param windowFunction windowing function to be applied to input signal
+     * @param zeroPadLength number of zeroes to be appended to windowed signal
+     */
     public SampleWindowExtractor(int[] wave, int windowSize, WindowFunction windowFunction, int zeroPadLength) {
         this.wave = wave;
         this.windowSize = windowSize;
@@ -52,9 +60,16 @@ public class SampleWindowExtractor {
         return window;
     }
 
+    /**
+     * Modifies a sample window by performing element-wise multiplication of samples with window function coefficients
+     * @param window sample window to which windowing function should be applied
+     */
     private void applyWindowingFunction(int[] window) {
         if(windowFunction != WindowFunction.RECTANGULAR) {
-            // todo: apply window function
+            double[] coefficients = WindowFunctionGenerator.generateWindow(windowSize, windowFunction);
+            for(int i = 0; i < windowSize; i++) {
+                window[i] = (int) Math.round(window[i] * coefficients[i]);
+            }
         }
     }
 

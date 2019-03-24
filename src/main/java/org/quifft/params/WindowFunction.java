@@ -8,30 +8,41 @@ public enum WindowFunction {
     /**
      * Extracts blocks of data from waveform without performing any transformation
      */
-    RECTANGULAR,
+    RECTANGULAR("Rectangular"),
 
     /**
      * A triangular window
      */
-    TRIANGULAR,
+    TRIANGULAR("Triangular"),
 
     /**
      * A Bartlett window (triangular window with zeroes on each end)
      */
-    BARTLETT,
+    BARTLETT("Bartlett"),
 
     /**
      * A Hann (or Hanning) window
      */
-    HANNING,
+    HANNING("Hanning"),
 
     /**
      * A Hamming window
      */
-    HAMMING,
+    HAMMING("Hamming"),
 
     /**
      * A Blackman window
      */
-    BLACKMAN
+    BLACKMAN("Blackman");
+
+    private final String name;
+
+    WindowFunction(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

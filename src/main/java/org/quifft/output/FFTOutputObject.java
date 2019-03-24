@@ -62,7 +62,14 @@ public abstract class FFTOutputObject {
         builder.append("== ").append(this instanceof FFTResult ? "FFTResult" : "FFTStream").append(" ==========================\n");
         builder.append(String.format("File: %s\n", fileName));
         builder.append(String.format("Frequency resolution: %.3f Hz\n", frequencyResolution));
+        builder.append(String.format("Windowing function: %s\n", fftParameters.windowFunction.toString()));
         builder.append(String.format("Window duration: %.1f ms\n", windowDurationMs));
+        builder.append("Window overlap: ");
+        if(fftParameters.windowOverlap == 0) {
+            builder.append("none\n");
+        } else {
+            builder.append(String.format("%.1f", fftParameters.windowOverlap * 100)).append("%\n");
+        }
         builder.append(String.format("Number of points in FFT: %d", fftParameters.windowSize));
         if(fftParameters.numPoints != null) {
             builder.append(String.format(" window size + %d zero-padding = %d", fftParameters.zeroPadLength(), fftParameters.numPoints));

@@ -10,6 +10,7 @@ import static org.junit.Assert.*;
 public class WindowExtractionTest {
 
     private static int[] exampleWave;
+    private static double[] hanning8 = {0, 0.19, 0.61, 0.95, 0.95, 0.61, 0.19, 0};
 
     @BeforeClass
     public static void createExampleWave() {
@@ -31,6 +32,39 @@ public class WindowExtractionTest {
 
         assertArrayEquals(expectedWindow, window1);
         assertArrayEquals(expectedWindow, window2);
+    }
+
+    @Test
+    public void Should_Apply_Window_Functions_By_Multiplying_Coefficients_To_Signal() {
+        int[] unitWave = new int[8];
+        Arrays.fill(unitWave, 100);
+
+        SampleWindowExtractor windowExtractor =
+                new SampleWindowExtractor(unitWave, 8, WindowFunction.HANNING, 0);
+        int[] extractedWindow = windowExtractor.extractWindow(0);
+
+        assertEquals(hanning8.length, extractedWindow.length);
+        for(int i = 0; i < extractedWindow.length; i++) {
+            assertEquals((int) Math.round(100 * hanning8[i]), extractedWindow[i]);
+        }
+    }
+
+    @Test
+    public void Should_Ignore_Zero_Padding_When_Applying_Window() {
+        int[] unitWave = new int[8];
+        Arrays.fill(unitWave, 100);
+
+        SampleWindowExtractor windowExtractor =
+                new SampleWindowExtractor(unitWave, 8, WindowFunction.HANNING, 24);
+        int[] extractedWindow = windowExtractor.extractWindow(0);
+
+        assertEquals(32, extractedWindow.length);
+        for(int i = 0; i < 8; i++) {
+            assertEquals((int) Math.round(100 * hanning8[i]), extractedWindow[i]);
+        }
+        for(int i = 8; i < extractedWindow.length; i++) {
+            assertEquals(0, extractedWindow[i]);
+        }
     }
 
 }

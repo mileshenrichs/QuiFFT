@@ -223,7 +223,7 @@ public class QuiFFT {
         // (FFT is symmetrical so any information after the halfway point is redundant)
         FrequencyBin[] bins = new FrequencyBin[complexFFT.length / 2];
         for(int i = 0; i < bins.length; i++) {
-            double scaledBinAmplitude = 2 * complexFFT[i].abs() / fftParameters.windowSize;
+            double scaledBinAmplitude = 2 * complexFFT[i].abs() / fftParameters.totalWindowLength();
             bins[i] = new FrequencyBin(i * frequencyAxisIncrement, scaledBinAmplitude);
         }
 
