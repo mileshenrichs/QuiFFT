@@ -40,6 +40,34 @@ public class WindowExtractionTest {
     }
 
     @Test
+    public void Should_Extract_Partial_Last_Window_Mono() {
+        int[] wave = {1, 2, 3, 4, 5, 6};
+        final int WINDOW_SIZE = 4;
+        int[] expected1 = {1, 2, 3, 4};
+        int[] expected2 = {5, 6, 0, 0};
+
+        SampleWindowExtractor extractor =
+                new SampleWindowExtractor(wave, false, WINDOW_SIZE, WindowFunction.RECTANGULAR, 0);
+
+        assertArrayEquals(expected1, extractor.extractWindow(0));
+        assertArrayEquals(expected2, extractor.extractWindow(1));
+    }
+
+    @Test
+    public void Should_Extract_Partial_Last_Window_Stereo() {
+        int[] wave = {1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6};
+        final int WINDOW_SIZE = 4;
+        int[] expected1 = {1, 2, 3, 4};
+        int[] expected2 = {5, 6, 0, 0};
+
+        SampleWindowExtractor extractor =
+                new SampleWindowExtractor(wave, true, WINDOW_SIZE, WindowFunction.RECTANGULAR, 0);
+
+        assertArrayEquals(expected1, extractor.extractWindow(0));
+        assertArrayEquals(expected2, extractor.extractWindow(1));
+    }
+
+    @Test
     public void Should_Apply_Window_Functions_By_Multiplying_Coefficients_To_Signal() {
         int[] unitWave = new int[8];
         Arrays.fill(unitWave, 100);

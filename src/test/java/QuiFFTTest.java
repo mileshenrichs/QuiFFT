@@ -99,6 +99,15 @@ public class QuiFFTTest {
     }
 
     @Test
+    public void Should_Not_Allow_Last_Frames_End_Times_To_Be_Greater_Than_Audio_Length() throws IOException, UnsupportedAudioFileException {
+        File audio = TestUtils.getAudioFile("600hz-tone-3secs-stereo.wav");
+        FFTResult result = new QuiFFT(audio).windowOverlap(0).fullFFT();
+        assertEquals(result.fftFrames[result.fftFrames.length - 1].frameEndMs, result.fileDurationMs, 0.0001);
+
+        // todo: add test with 50% overlap
+    }
+
+    @Test
     public void Should_Call_ToString_On_Result_Without_Error() throws IOException, UnsupportedAudioFileException {
         File audio = TestUtils.getAudioFile("600hz-tone-3secs-mono.wav");
         assertNotNull(new QuiFFT(audio).fullFFT().toString());

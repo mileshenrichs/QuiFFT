@@ -54,30 +54,19 @@ public class SampleWindowExtractor {
      * @return a single window extracted from full-length audio waveform
      */
     public int[] extractWindow(int i) {
+        // copy section of original waveform into sample array
         int[] window = new int[windowSize + zeroPadLength];
 
-        // copy section of original waveform into sample array
-        int s = windowSize * (i + 1);
-        if(isStereo) s *= 2;
+        int ds = windowSize; // delta sample (distance between start indices between consecutive windows)
+        int j = i * ds * (isStereo ? 2 : 1); // index into source waveform array
+        int samplesCopied = 0; // count samples copied to terminate loop once window size has been reached
 
-        if(isStereo) {
-            int remaining = windowSize;
-            if(i == numFrames - 1) remaining = (wave.length % windowSize) / 2;
-            if(remaining == 0) remaining = windowSize;
-
-            int j = s - (windowSize * 2);
-            for(int k = 0; k < remaining; k++) {
-                // average adjacent L (left) and R (right) samples together to produce mono sample
-                window[k] = (int) Math.round((wave[j] + wave[j + 1]) / 2.0);
+        while(samplesCopied < windowSize && j < wave.length) {
+            if(isStereo) {
+                window[samplesCopied++] = (int) Math.round((wave[j] + wave[j + 1]) / 2.0);
                 j += 2;
-            }
-        } else {
-            if(i < numFrames - 1) {
-                System.arraycopy(wave, s - windowSize, window, 0, windowSize);
             } else {
-                int remaining = wave.length % windowSize;
-                if(remaining == 0) remaining = windowSize;
-                System.arraycopy(wave, s - windowSize, window, 0, remaining);
+                window[samplesCopied++] = wave[j++];
             }
         }
 

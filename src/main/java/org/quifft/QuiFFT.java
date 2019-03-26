@@ -177,6 +177,7 @@ public class QuiFFT {
         int lengthOfWave = wave.length / (isStereo ? 2 : 1);
         int numFrames = (int) Math.ceil((double) lengthOfWave / fftParameters.windowSize);
         FFTFrame[] fftFrames = new FFTFrame[numFrames];
+
         SampleWindowExtractor windowExtractor = new SampleWindowExtractor(wave, isStereo, fftParameters.windowSize,
                 fftParameters.windowFunction, fftParameters.zeroPadLength());
         double currentAudioTimeMs = 0;
@@ -184,7 +185,7 @@ public class QuiFFT {
             // sampleWindow is input to FFT -- may be zero-padded if numPoints > windowSize
             int[] sampleWindow = windowExtractor.extractWindow(i);
 
-            fftFrames[i] = doFFT(sampleWindow, currentAudioTimeMs, fftResult.windowDurationMs);
+            fftFrames[i] = doFFT(sampleWindow, currentAudioTimeMs, fftResult.windowDurationMs, fftResult.fileDurationMs);
             currentAudioTimeMs += fftResult.windowDurationMs;
         }
 
@@ -204,9 +205,10 @@ public class QuiFFT {
      * @param wave sampled values from audio waveform
      * @param startTimeMs timestamp in the original audio file at which this sample window begins
      * @param windowDurationMs duration of sample window in milliseconds
+     * @param fileDurationMs duration of entire audio file in milliseconds
      * @return an FFT frame with the start and end time of this window and its frequency bins
      */
-    private FFTFrame doFFT(int[] wave, double startTimeMs, double windowDurationMs) {
+    private FFTFrame doFFT(int[] wave, double startTimeMs, double windowDurationMs, double fileDurationMs) {
         // get complex FFT values
         Complex[] complexWave = Complex.convertIntToComplex(wave);
         Complex[] complexFFT = FFT.fft(complexWave);
@@ -222,7 +224,8 @@ public class QuiFFT {
             bins[i] = new FrequencyBin(i * frequencyAxisIncrement, scaledBinAmplitude);
         }
 
-        return new FFTFrame(startTimeMs, startTimeMs + windowDurationMs, bins);
+        double endMs = Math.min(fileDurationMs, startTimeMs + windowDurationMs); // last window(s) will probably be partial
+        return new FFTFrame(startTimeMs, endMs, bins);
     }
 
     /**
