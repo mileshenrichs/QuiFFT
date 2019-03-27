@@ -25,8 +25,8 @@ public class SampleWindowExtractor {
     // number of zeroes to be appended to windowed signal
     private int zeroPadLength;
 
-    // number of frames in complete FFT; computed from wave length and window size
-    private int numFrames;
+    // delta sample (distance between start indices between consecutive windows)
+    private int ds;
 
     /**
      * Constructs a SampleWindowExtractor to take windows from an input signal for use in FFTs
@@ -35,16 +35,15 @@ public class SampleWindowExtractor {
      * @param windowFunction windowing function to be applied to input signal
      * @param zeroPadLength number of zeroes to be appended to windowed signal
      */
-    public SampleWindowExtractor(int[] wave, boolean isStereo, int windowSize, WindowFunction windowFunction, int zeroPadLength) {
+    public SampleWindowExtractor(int[] wave, boolean isStereo, int windowSize, WindowFunction windowFunction,
+                                 double windowOverlap, int zeroPadLength) {
         this.wave = wave;
         this.isStereo = isStereo;
         this.windowSize = windowSize;
         this.windowFunction = windowFunction;
         this.zeroPadLength = zeroPadLength;
 
-        // length of wave in number of samples (factors in whether wave is stereo or mono)
-        int lengthOfWave = wave.length / (isStereo ? 2 : 1);
-        this.numFrames = (int) Math.ceil((double) lengthOfWave / windowSize);
+        this.ds = (int) Math.floor(windowSize * (1 - windowOverlap));
     }
 
     /**
@@ -57,7 +56,6 @@ public class SampleWindowExtractor {
         // copy section of original waveform into sample array
         int[] window = new int[windowSize + zeroPadLength];
 
-        int ds = windowSize; // delta sample (distance between start indices between consecutive windows)
         int j = i * ds * (isStereo ? 2 : 1); // index into source waveform array
         int samplesCopied = 0; // count samples copied to terminate loop once window size has been reached
 

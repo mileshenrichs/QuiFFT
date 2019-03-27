@@ -4,6 +4,7 @@ import org.quifft.audioread.AudioReader;
 import org.quifft.params.FFTParameters;
 
 import javax.sound.sampled.AudioFormat;
+import java.text.DecimalFormat;
 
 public abstract class FFTOutputObject {
 
@@ -59,7 +60,8 @@ public abstract class FFTOutputObject {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("== ").append(this instanceof FFTResult ? "FFTResult" : "FFTStream").append(" ==========================\n");
+        builder.append("== ").append(this instanceof FFTResult ? "FFTResult" : "FFTStream")
+                .append(" ==========================\n");
         builder.append(String.format("File: %s\n", fileName));
         builder.append(String.format("Frequency resolution: %.3f Hz\n", frequencyResolution));
         builder.append(String.format("Windowing function: %s\n", fftParameters.windowFunction.toString()));
@@ -68,11 +70,14 @@ public abstract class FFTOutputObject {
         if(fftParameters.windowOverlap == 0) {
             builder.append("none\n");
         } else {
-            builder.append(String.format("%.1f", fftParameters.windowOverlap * 100)).append("%\n");
+            DecimalFormat decimalFormat = new DecimalFormat("#.#");
+            builder.append(String.format("%s", decimalFormat.format(fftParameters.windowOverlap * 100)))
+                    .append("%\n");
         }
         builder.append(String.format("Number of points in FFT: %d", fftParameters.windowSize));
         if(fftParameters.numPoints != null) {
-            builder.append(String.format(" window size + %d zero-padding = %d", fftParameters.zeroPadLength(), fftParameters.numPoints));
+            builder.append(String.format(" window size + %d zero-padding = %d",
+                    fftParameters.zeroPadLength(), fftParameters.numPoints));
         }
         builder.append(" points");
 

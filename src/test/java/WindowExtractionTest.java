@@ -28,7 +28,7 @@ public class WindowExtractionTest {
         final int WINDOW_SIZE = 16;
 
         SampleWindowExtractor windowExtractor =
-                new SampleWindowExtractor(exampleWave, false, WINDOW_SIZE, WindowFunction.RECTANGULAR, 0);
+                new SampleWindowExtractor(exampleWave, false, WINDOW_SIZE, WindowFunction.RECTANGULAR, 0, 0);
         int[] window1 = windowExtractor.extractWindow(0);
         int[] window2 = windowExtractor.extractWindow(1);
 
@@ -47,7 +47,7 @@ public class WindowExtractionTest {
         int[] expected2 = {5, 6, 0, 0};
 
         SampleWindowExtractor extractor =
-                new SampleWindowExtractor(wave, false, WINDOW_SIZE, WindowFunction.RECTANGULAR, 0);
+                new SampleWindowExtractor(wave, false, WINDOW_SIZE, WindowFunction.RECTANGULAR, 0, 0);
 
         assertArrayEquals(expected1, extractor.extractWindow(0));
         assertArrayEquals(expected2, extractor.extractWindow(1));
@@ -61,10 +61,52 @@ public class WindowExtractionTest {
         int[] expected2 = {5, 6, 0, 0};
 
         SampleWindowExtractor extractor =
-                new SampleWindowExtractor(wave, true, WINDOW_SIZE, WindowFunction.RECTANGULAR, 0);
+                new SampleWindowExtractor(wave, true, WINDOW_SIZE, WindowFunction.RECTANGULAR, 0, 0);
 
         assertArrayEquals(expected1, extractor.extractWindow(0));
         assertArrayEquals(expected2, extractor.extractWindow(1));
+    }
+
+    @Test
+    public void Should_Extract_Appropriate_Windows_With_Overlap() {
+        int[] signal = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12};
+        int WINDOW_SIZE = 4;
+        double OVERLAP = 0.50;
+        int[] expected1 = {1, 2, 3, 4};
+        int[] expected2 = {3, 4, 5, 6};
+        int[] expected3 = {5, 6, 7, 8};
+        int[] expected4 = {7, 8, 9, 10};
+        int[] expected5 = {9, 10, 11, 12};
+
+        SampleWindowExtractor extractor = new SampleWindowExtractor(signal, false, WINDOW_SIZE,
+                WindowFunction.RECTANGULAR, OVERLAP, 0);
+
+        assertArrayEquals(expected1, extractor.extractWindow(0));
+        assertArrayEquals(expected2, extractor.extractWindow(1));
+        assertArrayEquals(expected3, extractor.extractWindow(2));
+        assertArrayEquals(expected4, extractor.extractWindow(3));
+        assertArrayEquals(expected5, extractor.extractWindow(4));
+    }
+
+    @Test
+    public void Should_Extract_Appropriate_Windows_With_Overlap_And_Non_Integral_Signal_Length() {
+        int[] signal = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        int WINDOW_SIZE = 4;
+        double OVERLAP = 0.50;
+        int[] expected1 = {1, 2, 3, 4};
+        int[] expected2 = {3, 4, 5, 6};
+        int[] expected3 = {5, 6, 7, 8};
+        int[] expected4 = {7, 8, 9, 10};
+        int[] expected5 = {9, 10, 0, 0};
+
+        SampleWindowExtractor extractor = new SampleWindowExtractor(signal, false, WINDOW_SIZE,
+                WindowFunction.RECTANGULAR, OVERLAP, 0);
+
+        assertArrayEquals(expected1, extractor.extractWindow(0));
+        assertArrayEquals(expected2, extractor.extractWindow(1));
+        assertArrayEquals(expected3, extractor.extractWindow(2));
+        assertArrayEquals(expected4, extractor.extractWindow(3));
+        assertArrayEquals(expected5, extractor.extractWindow(4));
     }
 
     @Test
@@ -73,7 +115,7 @@ public class WindowExtractionTest {
         Arrays.fill(unitWave, 100);
 
         SampleWindowExtractor windowExtractor =
-                new SampleWindowExtractor(unitWave, false,8, WindowFunction.HANNING, 0);
+                new SampleWindowExtractor(unitWave, false,8, WindowFunction.HANNING, 0, 0);
         int[] extractedWindow = windowExtractor.extractWindow(0);
 
         assertEquals(hanning8.length, extractedWindow.length);
@@ -88,7 +130,7 @@ public class WindowExtractionTest {
         Arrays.fill(unitWave, 100);
 
         SampleWindowExtractor windowExtractor =
-                new SampleWindowExtractor(unitWave, false,8, WindowFunction.HANNING, 24);
+                new SampleWindowExtractor(unitWave, false,8, WindowFunction.HANNING, 0, 24);
         int[] extractedWindow = windowExtractor.extractWindow(0);
 
         assertEquals(32, extractedWindow.length);
@@ -106,7 +148,7 @@ public class WindowExtractionTest {
         int[] expectedMonoWave = {5, 25, 45, 65, 85, 105};
 
         SampleWindowExtractor extractor =
-            new SampleWindowExtractor(stereoWave, true, 6, WindowFunction.RECTANGULAR, 0);
+            new SampleWindowExtractor(stereoWave, true, 6, WindowFunction.RECTANGULAR, 0, 0);
         int[] extractedWave = extractor.extractWindow(0);
 
         assertArrayEquals(expectedMonoWave, extractedWave);
@@ -120,9 +162,9 @@ public class WindowExtractionTest {
         AudioReader monoReader = AudioReaderFactory.audioReaderFor(monoFile);
 
         SampleWindowExtractor stereoExtractor = new SampleWindowExtractor(stereoReader.getWaveform(),
-                true, 1024, WindowFunction.RECTANGULAR, 0);
+                true, 1024, WindowFunction.RECTANGULAR, 0, 0);
         SampleWindowExtractor monoExtractor = new SampleWindowExtractor(monoReader.getWaveform(),
-                false, 1024, WindowFunction.RECTANGULAR, 0);
+                false, 1024, WindowFunction.RECTANGULAR, 0, 0);
 
         int[] stereoWindow = stereoExtractor.extractWindow(1);
         int[] monoWindow = monoExtractor.extractWindow(1);
@@ -138,9 +180,9 @@ public class WindowExtractionTest {
         AudioReader monoReader = AudioReaderFactory.audioReaderFor(monoFile);
 
         SampleWindowExtractor stereoExtractor = new SampleWindowExtractor(stereoReader.getWaveform(),
-                true, 1024, WindowFunction.RECTANGULAR, 0);
+                true, 1024, WindowFunction.RECTANGULAR, 0, 0);
         SampleWindowExtractor monoExtractor = new SampleWindowExtractor(monoReader.getWaveform(),
-                false, 1024, WindowFunction.RECTANGULAR, 0);
+                false, 1024, WindowFunction.RECTANGULAR, 0, 0);
 
         int[] stereoWindow = stereoExtractor.extractWindow(6);
         int[] monoWindow = monoExtractor.extractWindow(6);

@@ -175,18 +175,19 @@ public class QuiFFT {
         int[] wave = audioReader.getWaveform();
 
         int lengthOfWave = wave.length / (isStereo ? 2 : 1);
-        int numFrames = (int) Math.ceil((double) lengthOfWave / fftParameters.windowSize);
+        double frameOverlapMultiplier = 1 / (1 - fftParameters.windowOverlap);
+        int numFrames = (int) Math.ceil(((double) lengthOfWave / fftParameters.windowSize) * frameOverlapMultiplier);
         FFTFrame[] fftFrames = new FFTFrame[numFrames];
 
         SampleWindowExtractor windowExtractor = new SampleWindowExtractor(wave, isStereo, fftParameters.windowSize,
-                fftParameters.windowFunction, fftParameters.zeroPadLength());
+                fftParameters.windowFunction, fftParameters.windowOverlap, fftParameters.zeroPadLength());
         double currentAudioTimeMs = 0;
         for(int i = 0; i < fftFrames.length; i++) {
             // sampleWindow is input to FFT -- may be zero-padded if numPoints > windowSize
             int[] sampleWindow = windowExtractor.extractWindow(i);
 
             fftFrames[i] = doFFT(sampleWindow, currentAudioTimeMs, fftResult.windowDurationMs, fftResult.fileDurationMs);
-            currentAudioTimeMs += fftResult.windowDurationMs;
+            currentAudioTimeMs += fftResult.windowDurationMs * (1 - fftParameters.windowOverlap);
         }
 
         if(fftParameters.useDecibelScale) {
@@ -240,6 +241,10 @@ public class QuiFFT {
         }
     }
 
+    /**
+     * Converts bin amplitude contents of FFT frames to a decibel (dB) scale
+     * @param fftFrames collection of FFT frames for which amplitudes should be scaled logarithmically
+     */
     private void scaleLogarithmically(FFTFrame[] fftFrames) {
         // dB is a measure that compares an intensity (amplitude) to some reference intensity.
         // This reference intensity should be the maximum possible intensity for any sample in the entire signal.

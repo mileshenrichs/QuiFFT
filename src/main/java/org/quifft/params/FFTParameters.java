@@ -19,7 +19,7 @@ public class FFTParameters {
      * Window function to be used
      * <p>One of: rectangular, triangular, Bartlett, Hanning, Hamming, Blackman</p>
      */
-    public WindowFunction windowFunction = WindowFunction.RECTANGULAR;
+    public WindowFunction windowFunction = WindowFunction.HANNING;
 
     /**
      * Percentage of overlap between adjacent sampled windows; must be between 0 and 1
@@ -27,7 +27,7 @@ public class FFTParameters {
      * because more FFT frames are calculated.  For example, if 75% overlap is used (windowOverlap = .75),
      * there will be 4 times as many FFT frames computed than there would be with no overlap.</p>
      */
-    public double windowOverlap = 0;
+    public double windowOverlap = 0.50;
 
     /**
      * Number of points in the N-point FFT
@@ -45,7 +45,7 @@ public class FFTParameters {
      * but QuiFFT sets a floor of -100 dB to avoid infinite values.</p>
      * <p>Therefore, if a decibel scale is used, bin amplitudes will be in the range [-100.0, 0.0].</p>
      */
-    public boolean useDecibelScale = false;
+    public boolean useDecibelScale = true;
 
     /**
      * If true, all frequency bin amplitudes will be in the range from 0.00 to 1.00,
