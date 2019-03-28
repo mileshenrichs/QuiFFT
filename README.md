@@ -1,4 +1,4 @@
-<p><img src="https://raw.githubusercontent.com/mileshenrichs/QuiFFT/master/logo.png"></p>
+<p><img src="https://raw.githubusercontent.com/mileshenrichs/QuiFFT/master/quifft-logo.png"></p>
 
 # QuiFFT
 QuiFFT is a Fourier transform (FFT) library for digital audio files.  QuiFFT abstracts away the technical details of digital audio representation and wave mathematics and provides a delightfully simple interface for computing [Fourier transforms](https://en.wikipedia.org/wiki/Fourier_transform) in Java. 
