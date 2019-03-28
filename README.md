@@ -1,6 +1,12 @@
-<p><img src="https://raw.githubusercontent.com/mileshenrichs/QuiFFT/master/quifft-logo.png"></p>
+![QuiFFT logo](logo.png)
 
-# QuiFFT
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+![GitHub](https://img.shields.io/github/license/mileshenrichs/QuiFFT.svg)
+
+## QuiFFT
 QuiFFT is a Fourier transform (FFT) library for digital audio files.  QuiFFT abstracts away the technical details of digital audio representation and wave mathematics and provides a delightfully simple interface for computing [Fourier transforms](https://en.wikipedia.org/wiki/Fourier_transform) in Java. 
 
 For those not experienced in signal processing, implementing a program that performs an FFT on audio data can be daunting.  In addition to the interpretation of raw FFT output, it requires knowledge about discrete time sampling, signal windowing, smoothing, and overlap.  QuiFFT provides the opportunity to analyze signal frequencies without the prerequisite of obtaining intimate knowledge of signal processing concepts.
