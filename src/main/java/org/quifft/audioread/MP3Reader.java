@@ -22,8 +22,6 @@ public class MP3Reader extends AudioReader {
     public MP3Reader(File audio) throws IOException, UnsupportedAudioFileException {
         this.audio = audio;
         getInputStream();
-
-        System.out.println("New MP3Reader created with audio format: " + inputStream.getFormat().toString());
     }
 
     @Override

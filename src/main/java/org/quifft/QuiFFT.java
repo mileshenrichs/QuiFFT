@@ -2,12 +2,8 @@ package org.quifft;
 
 import org.quifft.audioread.AudioReader;
 import org.quifft.audioread.AudioReaderFactory;
-import org.quifft.fft.Complex;
-import org.quifft.fft.FFT;
-import org.quifft.output.FFTFrame;
-import org.quifft.output.FFTResult;
-import org.quifft.output.FrequencyBin;
-import org.quifft.output.BadParametersException;
+import org.quifft.fft.FFTComputationWrapper;
+import org.quifft.output.*;
 import org.quifft.params.FFTParameters;
 import org.quifft.params.ParameterValidator;
 import org.quifft.params.WindowFunction;
@@ -162,16 +158,17 @@ public class QuiFFT {
 
     /**
      * Performs an FFT for the entirety of the audio file
-     * @throws BadParametersException if there are any invalid FFT parameters set
      * @return an FFT result containing metadata of this FFT and an array of all {@link FFTFrame}s computed
+     * @throws BadParametersException if there are any invalid FFT parameters set
      */
     public FFTResult fullFFT() {
-        ParameterValidator.validateFFTParameters(fftParameters);
+        ParameterValidator.validateFFTParameters(fftParameters, false);
 
         FFTResult fftResult = new FFTResult();
         fftResult.setMetadata(audioReader, fftParameters);
 
         boolean isStereo = audioReader.getAudioFormat().getChannels() == 2;
+        float sampleRate = audioReader.getAudioFormat().getSampleRate();
         int[] wave = audioReader.getWaveform();
 
         int lengthOfWave = wave.length / (isStereo ? 2 : 1);
@@ -186,12 +183,16 @@ public class QuiFFT {
             // sampleWindow is input to FFT -- may be zero-padded if numPoints > windowSize
             int[] sampleWindow = windowExtractor.extractWindow(i);
 
-            fftFrames[i] = doFFT(sampleWindow, currentAudioTimeMs, fftResult.windowDurationMs, fftResult.fileDurationMs);
+            // compute next current FFT frame
+            fftFrames[i] = FFTComputationWrapper.doFFT(sampleWindow, currentAudioTimeMs, fftResult.windowDurationMs,
+                    fftResult.fileDurationMs, sampleRate, fftParameters);
+
+            // adjust current audio time
             currentAudioTimeMs += fftResult.windowDurationMs * (1 - fftParameters.windowOverlap);
         }
 
         if(fftParameters.useDecibelScale) {
-            scaleLogarithmically(fftFrames);
+            FFTComputationWrapper.scaleLogarithmically(fftFrames);
         } else if(fftParameters.isNormalized) {
             double maxAmplitude = findMaxAmplitude(fftFrames);
             normalizeFFTResult(fftFrames, maxAmplitude);
@@ -202,31 +203,17 @@ public class QuiFFT {
     }
 
     /**
-     * Computes an FFT for a windowed time domain signal
-     * @param wave sampled values from audio waveform
-     * @param startTimeMs timestamp in the original audio file at which this sample window begins
-     * @param windowDurationMs duration of sample window in milliseconds
-     * @param fileDurationMs duration of entire audio file in milliseconds
-     * @return an FFT frame with the start and end time of this window and its frequency bins
+     * Creates an FFTStream which can be used as an iterator to compute FFT frames one by one
+     * @return an FFTStream which can be used as an iterator to compute FFT frames one by one
+     * @throws BadParametersException if there are any invalid FFT parameters set
      */
-    private FFTFrame doFFT(int[] wave, double startTimeMs, double windowDurationMs, double fileDurationMs) {
-        // get complex FFT values
-        Complex[] complexWave = Complex.convertIntToComplex(wave);
-        Complex[] complexFFT = FFT.fft(complexWave);
+    public FFTStream fftStream() {
+        ParameterValidator.validateFFTParameters(fftParameters, true);
 
-        // compute frequency increment for bins
-        double frequencyAxisIncrement = audioReader.getAudioFormat().getSampleRate() / (double) wave.length;
+        FFTStream fftStream = new FFTStream();
+        fftStream.setMetadata(audioReader, fftParameters);
 
-        // copy first half of FFT results into a list of frequency bins
-        // (FFT is symmetrical so any information after the halfway point is redundant)
-        FrequencyBin[] bins = new FrequencyBin[complexFFT.length / 2];
-        for(int i = 0; i < bins.length; i++) {
-            double scaledBinAmplitude = 2 * complexFFT[i].abs() / fftParameters.totalWindowLength();
-            bins[i] = new FrequencyBin(i * frequencyAxisIncrement, scaledBinAmplitude);
-        }
-
-        double endMs = Math.min(fileDurationMs, startTimeMs + windowDurationMs); // last window(s) will probably be partial
-        return new FFTFrame(startTimeMs, endMs, bins);
+        return fftStream;
     }
 
     /**
@@ -237,26 +224,6 @@ public class QuiFFT {
         for(FFTFrame frame : fftFrames) {
             for(FrequencyBin bin : frame.bins) {
                 bin.amplitude /= maxAmp;
-            }
-        }
-    }
-
-    /**
-     * Converts bin amplitude contents of FFT frames to a decibel (dB) scale
-     * @param fftFrames collection of FFT frames for which amplitudes should be scaled logarithmically
-     */
-    private void scaleLogarithmically(FFTFrame[] fftFrames) {
-        // dB is a measure that compares an intensity (amplitude) to some reference intensity.
-        // This reference intensity should be the maximum possible intensity for any sample in the entire signal.
-        // For 16-bit signed audio, this intensity is 32768.
-        final int MAX_INTENSITY = 32768;
-
-        for(FFTFrame frame : fftFrames) {
-            for(FrequencyBin bin : frame.bins) {
-                bin.amplitude = 10 * Math.log10(bin.amplitude / MAX_INTENSITY);
-
-                // establish -100 dB floor (avoid infinitely negative values)
-                bin.amplitude = Math.max(bin.amplitude, -100);
             }
         }
     }

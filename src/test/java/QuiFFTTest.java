@@ -148,38 +148,25 @@ public class QuiFFTTest {
     @Test
     public void Should_Compute_Peak_At_500Hz_For_500Hz_Stereo_WAV_Signal() throws IOException, UnsupportedAudioFileException {
         FFTResult result = new QuiFFT(stereo500Hz3SecsWav).dBScale(true).fullFFT();
-        assertEquals(500, findMaxFrequencyBin(result), result.frequencyResolution);
+        assertEquals(500, TestUtils.findMaxFrequencyBin(result.fftFrames[0]), result.frequencyResolution);
     }
 
     @Test
     public void Should_Compute_Peak_At_500Hz_For_500Hz_Mono_WAV_Signal() throws IOException, UnsupportedAudioFileException {
         FFTResult result = new QuiFFT(mono500Hz3SecsWav).dBScale(true).fullFFT();
-        assertEquals(500, findMaxFrequencyBin(result), result.frequencyResolution);
+        assertEquals(500, TestUtils.findMaxFrequencyBin(result.fftFrames[0]), result.frequencyResolution);
     }
 
     @Test
     public void Should_Compute_Peak_At_500Hz_For_500Hz_Stereo_MP3_Signal() throws IOException, UnsupportedAudioFileException {
         FFTResult result = new QuiFFT(stereo500Hz3SecsMP3).dBScale(true).fullFFT();
-        assertEquals(500, findMaxFrequencyBin(result), result.frequencyResolution);
+        assertEquals(500, TestUtils.findMaxFrequencyBin(result.fftFrames[0]), result.frequencyResolution);
     }
 
     @Test
     public void Should_Compute_Peak_At_500Hz_For_500Hz_Mono_MP3_Signal() throws IOException, UnsupportedAudioFileException {
         FFTResult result = new QuiFFT(mono500Hz3SecsMP3).dBScale(true).fullFFT();
-        assertEquals(500, findMaxFrequencyBin(result), result.frequencyResolution);
-    }
-
-    private static double findMaxFrequencyBin(FFTResult result) {
-        double maxAmplitude = -100;
-        double maxFrequencyBin = 0;
-        for(FrequencyBin bin : result.fftFrames[0].bins) {
-            if(bin.amplitude > maxAmplitude) {
-                maxAmplitude = bin.amplitude;
-                maxFrequencyBin = bin.frequency;
-            }
-        }
-
-        return maxFrequencyBin;
+        assertEquals(500, TestUtils.findMaxFrequencyBin(result.fftFrames[0]), result.frequencyResolution);
     }
 
     @Test

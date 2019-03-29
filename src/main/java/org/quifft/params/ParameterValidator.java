@@ -13,7 +13,7 @@ public class ParameterValidator {
      * @param params parameters of the FFT to be computed
      * @throws BadParametersException if there is an invalid parameter
      */
-    public static void validateFFTParameters(FFTParameters params) {
+    public static void validateFFTParameters(FFTParameters params, boolean isFFTStream) {
         // window size must be > 0
         if(params.windowSize <= 0)
             throw new BadParametersException(String.format("Window size must be positive; " +
@@ -50,6 +50,14 @@ public class ParameterValidator {
         if(params.numPoints != null && !isPow2(params.numPoints))
             throw new BadParametersException(String.format("Number of points in FFT must be a power of two; " +
                     "was set to %d", params.numPoints));
+
+        // normalization without dB scale can't be on for an FFTStream
+        if(isFFTStream && !params.useDecibelScale && params.isNormalized)
+            throw new BadParametersException("Normalization can't be used without also using dB scale for an FFTStream " +
+                    "because it doesn't make any sense -- normalization relies on knowing the maximum amplitude across " +
+                    "any frequency in the entire file, and FFTStream only knows the maximum frequency of one window " +
+                    "at a time.  If you'd like to use normalization with an FFTStream, it's recommended that you " +
+                    "implement this yourself");
     }
 
     private static boolean isPow2(int n) {

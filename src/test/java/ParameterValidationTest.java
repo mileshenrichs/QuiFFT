@@ -55,4 +55,9 @@ public class ParameterValidationTest {
         new QuiFFT(audioFile).windowSize(512).numPoints(1023).fullFFT();
     }
 
+    @Test(expected = BadParametersException.class)
+    public void Using_FFT_Stream_And_Normalized_Output_Without_Decibel_Scale() throws IOException, UnsupportedAudioFileException {
+        new QuiFFT(audioFile).normalized(true).dBScale(false).fftStream();
+    }
+
 }

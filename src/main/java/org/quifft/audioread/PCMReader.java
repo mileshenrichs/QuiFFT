@@ -21,8 +21,6 @@ public class PCMReader extends AudioReader {
     public PCMReader(File audio) throws IOException, UnsupportedAudioFileException {
         this.audio = audio;
         getInputStream();
-
-        System.out.println("New PCMReader created with audio format: " + inputStream.getFormat().toString());
     }
 
     @Override

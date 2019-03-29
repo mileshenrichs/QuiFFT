@@ -14,6 +14,7 @@ import org.quifft.params.FFTParameters;
  *     <li>{@code numPoints} is negative</li>
  *     <li>{@code numPoints} is set to be less than {@code windowSize}</li>
  *     <li>{@code numPoints} is set to a value that is not a power of 2</li>
+ *     <li>{@code useDecibelScale} is set to false and {@code isNormalzed} is set to true when using an {@link FFTStream}</li>
  *  </ul>
  * @see FFTParameters
  */

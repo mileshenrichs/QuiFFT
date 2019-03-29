@@ -75,6 +75,30 @@ public class SampleWindowExtractor {
     }
 
     /**
+     * Applies zero-padding the selected smoothing function to a given window; used with FFTStream
+     * @param window sampling window to which smoothing function should be applied
+     */
+    public int[] convertSamplesToWindow(int[] window) {
+        int[] fullWindow = new int[windowSize + zeroPadLength];
+
+        int j = 0;
+        int samplesCopied = 0;
+
+        while(samplesCopied < windowSize) {
+            if(isStereo) {
+                fullWindow[samplesCopied++] = (int) Math.round((window[j] + window[j + 1]) / 2.0);
+                j += 2;
+            } else {
+                fullWindow[samplesCopied++] = window[j++];
+            }
+        }
+
+        applyWindowingFunction(fullWindow);
+
+        return fullWindow;
+    }
+
+    /**
      * Modifies a sample window by performing element-wise multiplication of samples with window function coefficients
      * @param window sample window to which windowing function should be applied
      */
