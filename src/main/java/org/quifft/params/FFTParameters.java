@@ -53,7 +53,7 @@ public class FFTParameters {
      * <p>If {@code useDecibelScale} is set to true, the value of {@code isNormalized} doesn't
      * matter because the decibel scale is normalized by definition.</p>
      */
-    public boolean isNormalized = true;
+    public boolean isNormalized = false;
 
     /**
      * Get zero padding length (# of zeroes that should be appended to input signal before taking FFT)
