@@ -6,7 +6,7 @@ import org.quifft.params.FFTParameters;
 
 /**
  * Uses Princeton FFT Implementation to compute {@link FFTFrame}s
- * @see FFT
+ * @see InplaceFFT
  */
 public class FFTComputationWrapper {
 
@@ -24,16 +24,16 @@ public class FFTComputationWrapper {
                                  float audioSampleRate, FFTParameters fftParameters) {
         // get complex FFT values
         Complex[] complexWave = Complex.convertIntToComplex(wave);
-        Complex[] complexFFT = FFT.fft(complexWave);
+        InplaceFFT.fft(complexWave); // wave becomes FFT result
 
         // compute frequency increment for bins
         double frequencyAxisIncrement = audioSampleRate / (double) wave.length;
 
         // copy first half of FFT results into a list of frequency bins
         // (FFT is symmetrical so any information after the halfway point is redundant)
-        FrequencyBin[] bins = new FrequencyBin[complexFFT.length / 2];
+        FrequencyBin[] bins = new FrequencyBin[complexWave.length / 2];
         for(int i = 0; i < bins.length; i++) {
-            double scaledBinAmplitude = 2 * complexFFT[i].abs() / fftParameters.totalWindowLength();
+            double scaledBinAmplitude = 2 * complexWave[i].abs() / fftParameters.totalWindowLength();
             bins[i] = new FrequencyBin(i * frequencyAxisIncrement, scaledBinAmplitude);
         }
 

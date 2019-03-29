@@ -41,7 +41,7 @@ public class FFTStream extends FFTOutputObject implements Iterator<FFTFrame> {
         double overlap = fftParameters.windowOverlap;
         int zeroPadLength = fftParameters.zeroPadLength();
 
-        double startTimeMs = samplesTakenCount * windowDurationMs * fftParameters.windowOverlap;
+        double startTimeMs = samplesTakenCount * windowDurationMs * (1 - fftParameters.windowOverlap);
         float sampleRate = audioReader.getAudioFormat().getSampleRate();
 
         SampleWindowExtractor windowExtractor = new SampleWindowExtractor(nextWindow, isStereo, windowSize,

@@ -29,6 +29,8 @@ Exhaustive documentation for QuiFFT can be found below.
 
 ### Table of Contents
 - [__Getting Started__](#getting-started)
+    - [Maven Central](#maven-central)
+    - [Build from source](#build-from-source)
 - [__Supported File Types__](#supported-file-types)
 - [__QuiFFT Output Object Types__](#quifft-output-object-types)
     - [FFTFrame](#fftframe)
@@ -45,6 +47,8 @@ Exhaustive documentation for QuiFFT can be found below.
 ---
 
 ### Getting Started
+
+#### Maven Central
 QuiFFT can be installed from its Maven Central Repository:
 ```xml
 <dependency>
@@ -53,6 +57,9 @@ QuiFFT can be installed from its Maven Central Repository:
     <version>1.0.0</version>
 </dependency>
 ```
+
+#### Build from source
+Alternatively, you can clone the project and build it using `mvn clean install`.
 
 ### Supported File Types
 `QuiFFT`'s constructor accepts __8- and 16-bit__ audio files with the following extensions:
@@ -124,7 +131,7 @@ class FFTStream {
     double windowDurationMs;
     FFTParameters fftParameters;
     
-    // output methods unique to FFTResult
+    // output methods unique to FFTStream
     boolean hasNext();
     FFTFrame next();
 }

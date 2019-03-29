@@ -198,4 +198,29 @@ public class FFTStreamTest {
         assertTrue(Math.abs(noOverlapFramesCount - (overlapFramesCount / 4)) <= 1);
     }
 
+    @Test
+    public void Should_Compute_Same_Frame_Start_Times_As_Full_FFT() throws IOException, UnsupportedAudioFileException {
+        FFTFrame[] fullFFTFrames = new QuiFFT(mono600Hz3SecsWav).windowOverlap(0.25).fullFFT().fftFrames;
+        FFTStream fftStream = new QuiFFT(mono600Hz3SecsWav).windowOverlap(0.25).fftStream();
+        for(int i = 0; i < 3; i++) {
+            assertEquals(fullFFTFrames[i].frameStartMs, fftStream.next().frameStartMs, 0.0001);
+        }
+    }
+
+    @Test
+    public void Should_Take_Half_As_Much_Time_Between_Windows_With_50_Percent_Overlap_FFTStream() throws IOException, UnsupportedAudioFileException {
+        FFTStream noOverlap = new QuiFFT(mono600Hz3SecsWav).windowOverlap(0).fftStream();
+        FFTStream overlap = new QuiFFT(mono600Hz3SecsWav).windowOverlap(0.50).fftStream();
+
+        FFTFrame noOverlap1 = noOverlap.next();
+        FFTFrame noOverlap2 = noOverlap.next();
+        FFTFrame overlap1 = overlap.next();
+        FFTFrame overlap2 = overlap.next();
+
+        double noOverlapTime = noOverlap2.frameStartMs - noOverlap1.frameStartMs;
+        double overlapTime = overlap2.frameStartMs - overlap1.frameStartMs;
+
+        assertEquals(overlapTime, noOverlapTime / 2, 0.001);
+    }
+
 }

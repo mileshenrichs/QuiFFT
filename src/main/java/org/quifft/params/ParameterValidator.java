@@ -11,6 +11,7 @@ public class ParameterValidator {
     /**
      * Runs through checklist of parameter validations and throws exception if any issues are identified
      * @param params parameters of the FFT to be computed
+     * @param isFFTStream true if is FFTStream, false if is FFTResult
      * @throws BadParametersException if there is an invalid parameter
      */
     public static void validateFFTParameters(FFTParameters params, boolean isFFTStream) {

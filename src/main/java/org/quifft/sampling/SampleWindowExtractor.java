@@ -31,8 +31,10 @@ public class SampleWindowExtractor {
     /**
      * Constructs a SampleWindowExtractor to take windows from an input signal for use in FFTs
      * @param wave full-length waveform of original audio file
+     * @param isStereo true if waveform is stereo, false if mono
      * @param windowSize size of window as defined by FFT parameters (excludes zero-padding)
      * @param windowFunction windowing function to be applied to input signal
+     * @param windowOverlap window overlap percentage
      * @param zeroPadLength number of zeroes to be appended to windowed signal
      */
     public SampleWindowExtractor(int[] wave, boolean isStereo, int windowSize, WindowFunction windowFunction,
@@ -77,6 +79,7 @@ public class SampleWindowExtractor {
     /**
      * Applies zero-padding the selected smoothing function to a given window; used with FFTStream
      * @param window sampling window to which smoothing function should be applied
+     * @return sampling window with smoothing function applied
      */
     public int[] convertSamplesToWindow(int[] window) {
         int[] fullWindow = new int[windowSize + zeroPadLength];
