@@ -1,3 +1,5 @@
+package org.quifft;
+
 import org.junit.Test;
 import org.quifft.params.WindowFunction;
 import org.quifft.params.WindowFunctionGenerator;

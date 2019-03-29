@@ -1,3 +1,5 @@
+package org.quifft;
+
 import org.junit.Test;
 import org.quifft.audioread.AudioReader;
 import org.quifft.audioread.PCMReader;

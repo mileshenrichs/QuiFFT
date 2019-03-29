@@ -1,6 +1,7 @@
+package org.quifft;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.quifft.QuiFFT;
 import org.quifft.output.FFTFrame;
 import org.quifft.output.FFTResult;
 import org.quifft.output.FrequencyBin;

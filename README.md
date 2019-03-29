@@ -4,7 +4,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-![GitHub](https://img.shields.io/github/license/mileshenrichs/QuiFFT.svg)
+![](https://img.shields.io/github/license/mileshenrichs/QuiFFT.svg)
 
 ## QuiFFT
 QuiFFT is a [Fourier transform](https://en.wikipedia.org/wiki/Fourier_transform) (FFT) library for digital audio files.  QuiFFT abstracts away the technical details of digital audio representation and wave mathematics and provides a delightfully simple interface for computing Fourier transforms in Java. 
@@ -15,11 +15,15 @@ Your first FFT can be as easy as one line of code:
 ```java
 FFTResult fft = new QuiFFT("audio.mp3").fullFFT();
 ```
-This code computes an FFT for a file called `audio.mp3` using QuiFFT's [default FFT parameters](#configuring-fft-parameters).  Computing a more customized FFT is easy!  Just add a few configuration methods to the `QuiFFT` object:
+This code computes an FFT for a file called `audio.mp3` using QuiFFT's [default FFT parameters](#configuring-fft-parameters).
+
+Computing a more customized FFT is easy!  Just add a few configuration methods to the `QuiFFT` object:
 ```java
 FFTResult fft = new QuiFFT("audio.mp3").windowSize(2048)
     .windowFunction(WindowFunction.BLACKMAN).windowOverlap(0.75).fullFFT();
 ```
+
+Exhaustive documentation for QuiFFT can be found below.
 
 ---
 
@@ -32,6 +36,7 @@ FFTResult fft = new QuiFFT("audio.mp3").windowSize(2048)
     - [Full FFT](#full-fft)
     - [FFT Stream](#fft-stream)
 - [__Configuring FFT Parameters__](#configuring-fft-parameters)
+- [__FFT Algorithm Implementation__](#fft-algorithm-implementation)
 - [__JavaDoc and Code Examples__](#javadoc-and-code-examples)
     - [Basic FFT with default settings](#basic-fft-with-default-settings)
     - [FFT with customized parameters](#fft-with-customized-parameters)
@@ -84,7 +89,7 @@ class FrequencyBin {
     double amplitude;
 }
 ```
-The `frequency` variable indicates the start (lower) value of the bin range in Hertz.  The `amplitude` variable is what we're really interested in -- it represents the power of the frequencies within this bin from the time-domain sampling window.  For example, if you wanted to make a frequency spectrum visualizer, the `amplitude` values of each `FrequencyBin` would lie along the y-axis of the spectrum graph.  By default, amplitude values are in decibels (dB), but this can be changed through simple [configuration of the FFT parameters](#configuring-fft-parameters).
+The `frequency` variable indicates the start (lower) value of the bin range in Hertz.  The `amplitude` variable is what we're really interested in -- it represents the power of the frequencies within this bin from the time-domain sampling window.  If you wanted to make a frequency spectrum visualizer, for example, the `amplitude` values of each `FrequencyBin` would lie along the y-axis of the spectrum graph.  By default, amplitude values are in decibels (dB), but this can be changed through simple [configuration of the FFT parameters](#configuring-fft-parameters).
 
 #### Full FFT
 The Full FFT is not an output object of QuiFFT, but instead one of two methods for computing FFTs.  The Full FFT reads the entire audio file into memory, then computes and stores each FFT frame (output of FFT applied to a single sampling window), finally returning an array of all FFT frames for the entire audio file when it completes.  As mentioned in the introduction to this setting, if you fear this all-at-once computation will violate space constraints, it would be preferable to use the [FFT Stream](#fft-stream) method instead.
@@ -107,6 +112,23 @@ FFT output is accessible through the `fftFrames` array, which is a field unique 
 
 #### FFT Stream
 If you'd like to save some space by only reading bytes from an audio file as needed as opposed to all at once, the FFT Stream will come in handy.  It's an alternative way to compute an FFT that, unlike the Full FFT, computes individual FFT frames on an as-requested basis.
+
+__The output object associated with an FFT stream is `FFTStream`.__  Here's what it looks like:
+
+```java
+class FFTStream {
+    // metadata inherited from FFTOutputObject
+    String fileName;
+    long fileDurationMs;
+    double frequencyResolution;
+    double windowDurationMs;
+    FFTParameters fftParameters;
+    
+    // output methods unique to FFTResult
+    boolean hasNext();
+    FFTFrame next();
+}
+```
 
 The `FFTStream` class extends `Iterator<FFTFrame>`, so you can call `fftStream.hasNext()` to check if there's another frame that can be computed, and `fftFrame.next()` to perform the sample extraction and FFT computation.  The amount of work done by each call to `next()` is proportional to the window size chosen for the FFT.
 
@@ -142,6 +164,10 @@ Below is a reference for QuiFFT's configuration methods.  None of these paramete
 | `.normalized()`  | Boolean indicating whether FFT output will be normalized such that each amplitude is in the range `0.00 - 1.00` where `1.00` represents the highest amplitude of any bin across the entire signal | __`true`__, `false` | - |
 
 To get the current value of any of the above parameters from the `QuiFFT` object, simply call the configuration method without providing an argument.
+
+
+### FFT Algorithm Implementation
+Under the hood, QuiFFT uses Robert Sedgewick and Kevin Wayne's [implementation](https://introcs.cs.princeton.edu/java/97data/InplaceFFT.java.html) of an in-place radix 2 Cooley-Tukey FFT.  It runs in `O(n*logn)` time.
 
 ### JavaDoc and Code Examples
 See QuiFFT's JavaDoc on its website: https://www.quifft.org/javadoc

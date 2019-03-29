@@ -1,3 +1,5 @@
+package org.quifft;
+
 import org.quifft.output.FFTFrame;
 import org.quifft.output.FFTResult;
 import org.quifft.output.FrequencyBin;

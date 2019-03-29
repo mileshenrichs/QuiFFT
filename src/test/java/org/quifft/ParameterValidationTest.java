@@ -1,5 +1,6 @@
+package org.quifft;
+
 import org.junit.Test;
-import org.quifft.QuiFFT;
 import org.quifft.output.BadParametersException;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
