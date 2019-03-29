@@ -11,6 +11,7 @@ import org.quifft.params.WindowFunction;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 import static org.junit.Assert.*;
 
@@ -27,10 +28,24 @@ public class FFTStreamTest {
     public static void createQuiFFTResult() {
         mono600Hz3SecsWav = TestUtils.getAudioFile("600hz-tone-3secs-mono.wav");
         stereo600Hz500MsWAV = TestUtils.getAudioFile("600hz-tone-500ms-stereo.wav");
+        stereo600Hz500MsWAV = TestUtils.getAudioFile("600hz-tone-500ms-stereo.wav");
         mono500Hz3SecsWav = TestUtils.getAudioFile("500hz-tone-3secs-mono.wav");
         stereo500Hz3SecsWav = TestUtils.getAudioFile("500hz-tone-3secs-stereo.wav");
         mono500Hz3SecsMP3 = TestUtils.getAudioFile("500hz-tone-3secs-mono.mp3");
         stereo500Hz3SecsMP3 = TestUtils.getAudioFile("500hz-tone-3secs-stereo.mp3");
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void Should_Throw_Exception_If_Next_Called_When_No_More_Samples_Remain() throws IOException, UnsupportedAudioFileException {
+        FFTStream fftStream = new QuiFFT(stereo600Hz500MsWAV).fftStream();
+        for(int i = 0; i < 100; i++) {
+            fftStream.next();
+        }
+    }
+
+    @Test
+    public void Should_Call_ToString_On_Stream_Without_Error() throws IOException, UnsupportedAudioFileException {
+        assertNotNull(new QuiFFT(mono600Hz3SecsWav).fftStream().toString());
     }
 
     @Test

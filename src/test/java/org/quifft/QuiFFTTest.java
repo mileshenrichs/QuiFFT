@@ -43,6 +43,12 @@ public class QuiFFTTest {
         new QuiFFT(audio);
     }
 
+    @Test(expected = UnsupportedAudioFileException.class)
+    public void Should_Throw_Exception_When_Passed_File_With_No_Extension() throws IOException, UnsupportedAudioFileException {
+        File noExtensionFile = TestUtils.getAudioFile("file-with-no-extension");
+        new QuiFFT(noExtensionFile);
+    }
+
     @Test
     public void Should_Set_And_Return_FFT_Parameters_Correctly() throws IOException, UnsupportedAudioFileException {
         QuiFFT quiFFT = new QuiFFT(mono600Hz3SecsWav).windowSize(512).windowFunction(WindowFunction.HANNING)
@@ -124,6 +130,7 @@ public class QuiFFTTest {
     @Test
     public void Should_Call_ToString_On_Result_Without_Error() throws IOException, UnsupportedAudioFileException {
         assertNotNull(new QuiFFT(mono600Hz3SecsWav).fullFFT().toString());
+        assertNotNull(new QuiFFT(mono600Hz3SecsWav).windowOverlap(0).numPoints(8192).fullFFT().toString());
     }
 
     @Test
@@ -148,25 +155,25 @@ public class QuiFFTTest {
 
     @Test
     public void Should_Compute_Peak_At_500Hz_For_500Hz_Stereo_WAV_Signal() throws IOException, UnsupportedAudioFileException {
-        FFTResult result = new QuiFFT(stereo500Hz3SecsWav).dBScale(true).fullFFT();
+        FFTResult result = new QuiFFT(stereo500Hz3SecsWav).fullFFT();
         assertEquals(500, TestUtils.findMaxFrequencyBin(result.fftFrames[0]), result.frequencyResolution);
     }
 
     @Test
     public void Should_Compute_Peak_At_500Hz_For_500Hz_Mono_WAV_Signal() throws IOException, UnsupportedAudioFileException {
-        FFTResult result = new QuiFFT(mono500Hz3SecsWav).dBScale(true).fullFFT();
+        FFTResult result = new QuiFFT(mono500Hz3SecsWav).fullFFT();
         assertEquals(500, TestUtils.findMaxFrequencyBin(result.fftFrames[0]), result.frequencyResolution);
     }
 
     @Test
     public void Should_Compute_Peak_At_500Hz_For_500Hz_Stereo_MP3_Signal() throws IOException, UnsupportedAudioFileException {
-        FFTResult result = new QuiFFT(stereo500Hz3SecsMP3).dBScale(true).fullFFT();
+        FFTResult result = new QuiFFT(stereo500Hz3SecsMP3).fullFFT();
         assertEquals(500, TestUtils.findMaxFrequencyBin(result.fftFrames[0]), result.frequencyResolution);
     }
 
     @Test
     public void Should_Compute_Peak_At_500Hz_For_500Hz_Mono_MP3_Signal() throws IOException, UnsupportedAudioFileException {
-        FFTResult result = new QuiFFT(mono500Hz3SecsMP3).dBScale(true).fullFFT();
+        FFTResult result = new QuiFFT(mono500Hz3SecsMP3).fullFFT();
         assertEquals(500, TestUtils.findMaxFrequencyBin(result.fftFrames[0]), result.frequencyResolution);
     }
 

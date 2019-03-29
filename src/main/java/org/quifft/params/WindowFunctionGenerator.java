@@ -1,12 +1,10 @@
 package org.quifft.params;
 
-import java.util.Arrays;
-
 /**
  * Generates coefficients for various windowing functions based on
  * <a href="https://www.mathworks.com/help/dsp/ref/windowfunction.html">MATLAB implementations</a>
  */
-public class WindowFunctionGenerator {
+public abstract class WindowFunctionGenerator {
 
     /**
      * Generates coefficients for a window of specified length and type
@@ -26,12 +24,9 @@ public class WindowFunctionGenerator {
             case HAMMING:
                 return hamming(N);
             case BLACKMAN:
+            default:
                 return blackman(N);
         }
-
-        double[] oops = new double[N];
-        Arrays.fill(oops, 1);
-        return oops;
     }
 
     /**

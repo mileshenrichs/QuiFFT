@@ -5,6 +5,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 [![](https://travis-ci.org/mileshenrichs/QuiFFT.svg?branch=master)](https://travis-ci.org/mileshenrichs/QuiFFT)
+[![](https://img.shields.io/codecov/c/github/mileshenrichs/QuiFFT.svg)](https://codecov.io/gh/mileshenrichs/QuiFFT)
 ![](https://img.shields.io/github/license/mileshenrichs/QuiFFT.svg)
 
 ## QuiFFT

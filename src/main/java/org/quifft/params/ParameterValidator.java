@@ -6,7 +6,7 @@ import org.quifft.output.BadParametersException;
  * Validates {@link FFTParameters} prior to the computation of FFT and throws a {@link BadParametersException} if
  * any invalid parameters are found
  */
-public class ParameterValidator {
+public abstract class ParameterValidator {
 
     /**
      * Runs through checklist of parameter validations and throws exception if any issues are identified

@@ -8,7 +8,7 @@ import org.quifft.params.FFTParameters;
  * Uses Princeton FFT Implementation to compute {@link FFTFrame}s
  * @see InplaceFFT
  */
-public class FFTComputationWrapper {
+public abstract class FFTComputationWrapper {
 
     /**
      * Computes an FFT for a windowed time domain signal

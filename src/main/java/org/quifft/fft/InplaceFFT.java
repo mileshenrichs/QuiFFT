@@ -25,16 +25,13 @@ package org.quifft.fft;
  * @author Robert Sedgewick
  * @author Kevin Wayne
  */
-public class InplaceFFT {
+public abstract class InplaceFFT {
 
     // compute the FFT of x[], assuming its length is a power of 2
     public static void fft(Complex[] x) {
 
-        // check that length is a power of 2
+        // assume length is a power of 2
         int n = x.length;
-        if (Integer.highestOneBit(n) != n) {
-            throw new RuntimeException("n is not a power of 2");
-        }
 
         // bit reversal permutation
         int shift = 1 + Integer.numberOfLeadingZeros(n);

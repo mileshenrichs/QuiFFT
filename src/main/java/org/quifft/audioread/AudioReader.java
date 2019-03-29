@@ -106,20 +106,13 @@ public abstract class AudioReader implements Iterator<int[]> {
      */
     private byte[] getBytes() {
         try {
-            return ByteStreams.toByteArray(inputStream);
-        } catch (IOException e) {
+            byte[] bytes = ByteStreams.toByteArray(inputStream);
+            inputStream.close();
+            return bytes;
+        } catch(IOException e) {
             e.printStackTrace();
-        } finally {
-            if(inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            return new byte[0];
         }
-
-        return new byte[0];
     }
 
     /**
@@ -223,7 +216,7 @@ public abstract class AudioReader implements Iterator<int[]> {
         int b = 0;
         for(int i = 0; i < samples.length; i++) {
             ByteBuffer bb = ByteBuffer.allocate(2);
-            bb.order(inputStream.getFormat().isBigEndian() ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN);
+            bb.order(ByteOrder.LITTLE_ENDIAN);
             for(int j = 0; j < BYTES_PER_SAMPLE; j++) {
                 bb.put(bytes[b++]);
             }
@@ -248,9 +241,9 @@ public abstract class AudioReader implements Iterator<int[]> {
         while(numBytesRead < b.length && lastBytesRead != -1) {
             lastBytesRead = inputStream.read(b, numBytesRead, b.length - numBytesRead);
 
-            if(lastBytesRead == -1 && numBytesRead > 0) numBytesRead++; // offset addition of -1 to numBytesRead
-
-            numBytesRead += lastBytesRead;
+            if(lastBytesRead != -1) {
+                numBytesRead += lastBytesRead;
+            }
         }
 
         return numBytesRead;
