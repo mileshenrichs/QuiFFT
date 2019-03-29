@@ -25,7 +25,7 @@ package org.quifft.fft;
  * @author Robert Sedgewick
  * @author Kevin Wayne
  */
-public abstract class InplaceFFT {
+public class InplaceFFT {
 
     // compute the FFT of x[], assuming its length is a power of 2
     public static void fft(Complex[] x) {

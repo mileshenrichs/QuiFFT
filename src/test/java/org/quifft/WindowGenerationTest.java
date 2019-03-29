@@ -69,4 +69,9 @@ public class WindowGenerationTest {
         assertArrayEquals(blackman15, window, 0.001);
     }
 
+    @Test
+    public void Instantiate_WindowFunctionGenerator_To_Make_Cobertura_Happy() {
+        new WindowFunctionGenerator();
+    }
+
 }

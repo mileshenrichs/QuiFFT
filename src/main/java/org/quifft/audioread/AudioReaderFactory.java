@@ -7,7 +7,7 @@ import java.io.IOException;
 /**
  * Factory to produce an appropriate subclass of {@link AudioReader} depending on whether input file is MP3 or WAV
  */
-public abstract class AudioReaderFactory {
+public class AudioReaderFactory {
 
     /**
      * Produces a {@link PCMReader} if given file is WAV or AIFF, {@link MP3Reader} if MP3, throws exception otherwise

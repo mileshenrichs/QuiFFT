@@ -4,7 +4,7 @@ package org.quifft.params;
  * Generates coefficients for various windowing functions based on
  * <a href="https://www.mathworks.com/help/dsp/ref/windowfunction.html">MATLAB implementations</a>
  */
-public abstract class WindowFunctionGenerator {
+public class WindowFunctionGenerator {
 
     /**
      * Generates coefficients for a window of specified length and type

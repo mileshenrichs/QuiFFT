@@ -2,6 +2,7 @@ package org.quifft;
 
 import org.junit.Test;
 import org.quifft.output.BadParametersException;
+import org.quifft.params.ParameterValidator;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
@@ -59,6 +60,11 @@ public class ParameterValidationTest {
     @Test(expected = BadParametersException.class)
     public void Using_FFT_Stream_And_Normalized_Output_Without_Decibel_Scale() throws IOException, UnsupportedAudioFileException {
         new QuiFFT(audioFile).normalized(true).dBScale(false).fftStream();
+    }
+
+    @Test
+    public void Instantiate_ParameterValidator_To_Make_Cobertura_Happy() {
+        new ParameterValidator();
     }
 
 }
