@@ -8,7 +8,7 @@
 [![](https://img.shields.io/codecov/c/github/mileshenrichs/QuiFFT.svg)](https://codecov.io/gh/mileshenrichs/QuiFFT)&nbsp;
 
 ## QuiFFT
-QuiFFT is a [Fourier transform](https://en.wikipedia.org/wiki/Fourier_transform) (FFT) library for digital audio files.  QuiFFT abstracts away the technical details of digital audio representation and wave mathematics and provides a delightfully simple interface for computing Fourier transforms in Java. 
+QuiFFT is a [Fourier transform](https://en.wikipedia.org/wiki/Fourier_transform) (FFT) library for digital audio files.  QuiFFT abstracts away the technical details of digital audio representation and wave mathematics, providing a delightfully simple interface for computing Fourier transforms in Java. 
 
 For those not experienced in signal processing, implementing a program that performs an FFT on audio data can be daunting.  In addition to the interpretation of raw FFT output, it requires knowledge about discrete time sampling, signal windowing, smoothing, and overlap.  QuiFFT provides the opportunity to analyze signal frequencies without the prerequisite of obtaining intimate knowledge of signal processing concepts.
 
@@ -193,19 +193,21 @@ See QuiFFT's JavaDoc on its website: https://www.quifft.org/javadoc
 Below are some code examples that make use of QuiFFT's functionality.  All of these examples come from the [quifft-examples](https://github.com/mileshenrichs/quifft-examples) repository.
 
 #### Basic FFT with default settings
-[quifft-examples/yourfirstfft]()
+[quifft-examples/yourfirstfft](https://github.com/mileshenrichs/quifft-examples/tree/master/src/main/java/yourfirstfft)
 
 #### FFT with customized parameters
 - FFT with rectangular windows of length 1024 samples and 75% window overlap
 - FFT whose amplitude values are scaled linearly (as opposed to logarithmic dB) between 0 and 1
 - FFT over sampling window that isn't a power of 2 (zero-padding)
 
-[quifft-examples/customizedparams]()
+[quifft-examples/customizedparams](https://github.com/mileshenrichs/quifft-examples/tree/master/src/main/java/customizedparams)
 
 #### Music Frequency Spectrum Visualizer using FFTStream
+![](spectrum-visualizer.gif)
+
 This spectrum visualizer renders an animated graph of the frequency content of full-length MP3 files using QuiFFT's `FFTStream` and [JFreeChart](https://github.com/jfree/jfreechart).
 
-[quifft-examples/spectrum]()
+[quifft-examples/spectrumvisualization](https://github.com/mileshenrichs/quifft-examples/tree/master/src/main/java/spectrumvisualization)
 
 ### Changelog
 
