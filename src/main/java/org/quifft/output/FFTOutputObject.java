@@ -6,6 +6,9 @@ import org.quifft.params.FFTParameters;
 import javax.sound.sampled.AudioFormat;
 import java.text.DecimalFormat;
 
+/**
+ * Object representing the result of a Fourier transform; superclass of two result types {@link FFTResult} and {@link FFTStream}
+ */
 public abstract class FFTOutputObject {
 
     /**

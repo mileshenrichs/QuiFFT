@@ -15,8 +15,8 @@ public class MP3Reader extends AudioReader {
     private AudioFileFormat audioFileFormat;
 
     /**
-     * The construction of a PCMReader opens an {@link AudioInputStream} for the .wav file.
-     * @param audio .wav file to be read
+     * The construction of an MP3Reader opens an {@link AudioInputStream} for the .mp3 file.
+     * @param audio .mp3 file to be read
      * @throws IOException if an I/O exception occurs when the input stream is initialized
      * @throws UnsupportedAudioFileException if the file is not a valid audio file
      */

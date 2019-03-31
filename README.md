@@ -6,7 +6,6 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 [![](https://travis-ci.org/mileshenrichs/QuiFFT.svg?branch=master)](https://travis-ci.org/mileshenrichs/QuiFFT)&nbsp;
 [![](https://img.shields.io/codecov/c/github/mileshenrichs/QuiFFT.svg)](https://codecov.io/gh/mileshenrichs/QuiFFT)&nbsp;
-![](https://img.shields.io/github/license/mileshenrichs/QuiFFT.svg)
 
 ## QuiFFT
 QuiFFT is a [Fourier transform](https://en.wikipedia.org/wiki/Fourier_transform) (FFT) library for digital audio files.  QuiFFT abstracts away the technical details of digital audio representation and wave mathematics and provides a delightfully simple interface for computing Fourier transforms in Java. 
@@ -45,6 +44,7 @@ Exhaustive documentation for QuiFFT can be found below.
     - [Basic FFT with default settings](#basic-fft-with-default-settings)
     - [FFT with customized parameters](#fft-with-customized-parameters)
     - [Music Frequency Spectrum Visualizer using FFTStream](#music-frequency-spectrum-visualizer-using-fftstream)
+- [__Changelog__](#changelog)
     
 ---
 
@@ -56,12 +56,17 @@ QuiFFT can be installed from its Maven Central Repository:
 <dependency>
     <groupId>org.quifft</groupId>
     <artifactId>quifft</artifactId>
-    <version>1.0.0</version>
+    <version>0.1.0</version>
 </dependency>
 ```
 
 #### Build from source
-Alternatively, you can clone the project and build it using `mvn clean install`.
+Alternatively, you can clone the project and build it from the command line:
+```
+git clone https://github.com/mhenrichs/QuiFFT.git
+cd QuiFFT
+mvn install
+```
 
 ### Supported File Types
 `QuiFFT`'s constructor accepts __8- and 16-bit__ audio files with the following extensions:
@@ -70,6 +75,8 @@ Alternatively, you can clone the project and build it using `mvn clean install`.
 - .mp3
 
 If a file not matching the above extensions or an audio file with a bit depth of 24 or 32 is provided, the constructor will throw an `UnsupportedAudioFileException`.
+
+QuiFFT can perform FFTs on both single channel (mono) and dual channel (stereo) audio signals.  For stereo audio, left and right samples are averaged together (which effectively converts it to mono) before computing the FFT.
 
 ### QuiFFT Output Object Types
 QuiFFT has been designed with simplicity and ease of use in mind, so its output structures are named using basic signal processing vocabulary and include metadata fields to make it extremely clear what type of information each object represents.
@@ -199,3 +206,7 @@ Below are some code examples that make use of QuiFFT's functionality.  All of th
 This spectrum visualizer renders an animated graph of the frequency content of full-length MP3 files using QuiFFT's `FFTStream` and [JFreeChart](https://github.com/jfree/jfreechart).
 
 [quifft-examples/spectrum]()
+
+### Changelog
+
+- __v0.1.0__: initial release \[03/31/2019\]
