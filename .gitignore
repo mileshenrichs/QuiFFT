@@ -3,3 +3,4 @@
 target/
 src/main/javadoc
 src/main/resources
+exported_key.gpg
