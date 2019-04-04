@@ -6,8 +6,8 @@ before_install:
 - openssl aes-256-cbc -K $encrypted_ff76609892c5_key -iv $encrypted_ff76609892c5_iv
   -in keys.tar.enc -out keys.tar -d
 - tar xvf keys.tar
-- cat exported_key.gpg | sudo apt-key add -
-- cat exported_secret_key.asc | sudo apt-key add -
+- gpg --import exported_key.gpg
+- gpg --import exported_secret_key.asc
 
 script: mvn cobertura:cobertura
 
