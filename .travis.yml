@@ -3,16 +3,19 @@ language: java
 sudo: false
 
 before_install:
-- openssl aes-256-cbc -K $encrypted_ff76609892c5_key -iv $encrypted_ff76609892c5_iv
-  -in keys.tar.enc -out keys.tar -d
-- tar xvf keys.tar
-- gpg --import exported_key.gpg
-- gpg --import exported_secret_key.asc
+  - openssl aes-256-cbc -K $encrypted_ff76609892c5_key -iv $encrypted_ff76609892c5_iv
+    -in keys.tar.enc -out keys.tar -d
+  - tar xvf keys.tar
+  - gpg --import exported_key.gpg
+  - gpg --import exported_secret_key.asc
+
+install:
+  - mvn install -DskipTests=true -Dgpg.skip=true
 
 script: mvn cobertura:cobertura
 
 after_success:
-- bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://codecov.io/bash)
 
 env:
   global:
