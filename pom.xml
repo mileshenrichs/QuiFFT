@@ -6,7 +6,7 @@
 
     <groupId>org.quifft</groupId>
     <artifactId>quifft</artifactId>
-    <version>0.1.1</version>
+    <version>0.1.2-SNAPSHOT</version>
 
     <name>QuiFFT</name>
     <description>QuiFFT is a Fourier transform (FFT) library for digital audio files. QuiFFT abstracts away the technical details of digital audio representation and wave mathematics and provides a delightfully simple interface for computing Fourier transforms in Java.</description>
@@ -105,7 +105,7 @@
 
     <profiles>
         <profile>
-            <id>deploy</id>
+            <id>release</id>
             <build>
                 <plugins>
                     <plugin>
