@@ -1,6 +1,5 @@
 package org.quifft.audioread;
 
-import com.google.common.io.ByteStreams;
 import org.quifft.output.FFTStream;
 import org.quifft.params.FFTParameters;
 
@@ -8,6 +7,7 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -99,16 +99,21 @@ public abstract class AudioReader implements Iterator<int[]> {
         return inputStream.getFormat();
     }
 
-    // todo: see if I can make getBytes() have the right length for MP3 files
     /**
-     * Extracts audio bytes from input stream with help of Guava's {@link ByteStreams} class
+     * Extracts all bytes from an audio file
      * @return all bytes present in audio file
      */
     private byte[] getBytes() {
         try {
-            byte[] bytes = ByteStreams.toByteArray(inputStream);
-            inputStream.close();
-            return bytes;
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            int numBytesRead;
+            byte[] bytes = new byte[16384];
+
+            while ((numBytesRead = inputStream.read(bytes, 0, bytes.length)) != -1) {
+                buffer.write(bytes, 0, numBytesRead);
+            }
+
+            return buffer.toByteArray();
         } catch(IOException e) {
             e.printStackTrace();
             return new byte[0];

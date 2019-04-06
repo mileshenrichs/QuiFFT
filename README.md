@@ -1,11 +1,16 @@
 ![QuiFFT logo](logo.png)
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-[![](https://travis-ci.org/mileshenrichs/QuiFFT.svg?branch=master)](https://travis-ci.org/mileshenrichs/QuiFFT)&nbsp;
-[![](https://img.shields.io/codecov/c/github/mileshenrichs/QuiFFT.svg)](https://codecov.io/gh/mileshenrichs/QuiFFT)&nbsp;
+<div align="center" style="margin: 10px 0 0 0">
+    <a href="https://search.maven.org/artifact/org.quifft/quifft">
+        <img src="https://img.shields.io/maven-central/v/org.quifft/quifft.svg?color=blue" alt="" />
+    </a>
+    <a href="https://travis-ci.org/mileshenrichs/QuiFFT">
+        <img src="https://travis-ci.org/mileshenrichs/QuiFFT.svg?branch=master" alt="" />
+    </a>
+    <a href="https://codecov.io/gh/mileshenrichs/QuiFFT">
+        <img src="https://img.shields.io/codecov/c/github/mileshenrichs/QuiFFT.svg" alt="" />
+    </a>
+</div>
 
 ## QuiFFT
 QuiFFT is a [Fourier transform](https://en.wikipedia.org/wiki/Fourier_transform) (FFT) library for digital audio files.  QuiFFT abstracts away the technical details of digital audio representation and wave mathematics, providing a delightfully simple interface for computing Fourier transforms in Java. 
@@ -51,12 +56,12 @@ Exhaustive documentation for QuiFFT can be found below.
 ### Getting Started
 
 #### Maven Central
-QuiFFT can be installed from its Maven Central Repository:
+QuiFFT can be installed from the Maven Central Repository:
 ```xml
 <dependency>
     <groupId>org.quifft</groupId>
     <artifactId>quifft</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
 </dependency>
 ```
 
@@ -65,7 +70,7 @@ Alternatively, you can clone the project and build it from the command line:
 ```
 git clone https://github.com/mhenrichs/QuiFFT.git
 cd QuiFFT
-mvn install
+mvn clean install
 ```
 
 ### Supported File Types
@@ -211,4 +216,5 @@ This spectrum visualizer renders an animated graph of the frequency content of f
 
 ### Changelog
 
-- __v0.1.0__: initial release \[03/31/2019\]
+- __v0.1.1__: remove unnecessary Guava dependency -- read all bytes of an audio file using native classes \[04/06/2019\]
+- __v0.1.0__: initial release \[04/05/2019\]
