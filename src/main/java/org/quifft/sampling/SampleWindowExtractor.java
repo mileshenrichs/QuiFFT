@@ -77,7 +77,7 @@ public class SampleWindowExtractor {
     }
 
     /**
-     * Applies zero-padding the selected smoothing function to a given window; used with FFTStream
+     * Applies zero-padding and the selected smoothing function to a given window; used with FFTStream
      * @param window sampling window to which smoothing function should be applied
      * @return sampling window with smoothing function applied
      */

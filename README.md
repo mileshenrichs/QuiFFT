@@ -31,6 +31,8 @@ FFTResult fft = new QuiFFT("audio.mp3").windowSize(2048)
 
 Exhaustive documentation for QuiFFT can be found below.
 
+For examples of QuiFFT in action, see the [quifft-examples](https://github.com/mileshenrichs/quifft-examples) repo.
+
 ---
 
 ### Table of Contents
@@ -68,9 +70,9 @@ QuiFFT can be installed from the Maven Central Repository:
 #### Build from source
 Alternatively, you can clone the project and build it from the command line:
 ```
-git clone https://github.com/mhenrichs/QuiFFT.git
-cd QuiFFT
-mvn clean install
+$ git clone https://github.com/mhenrichs/QuiFFT.git
+$ cd QuiFFT
+$ mvn clean install
 ```
 
 ### Supported File Types
