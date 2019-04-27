@@ -41,6 +41,9 @@ public abstract class FFTOutputObject {
      */
     public FFTParameters fftParameters;
 
+    // The sample rate of the audio
+    private float audioSampleRate;
+
     /**
      * Sets metadata to be returned by an output object ({@link FFTResult} or {@link FFTStream})
      * @param reader AudioReader created for input file
@@ -52,7 +55,8 @@ public abstract class FFTOutputObject {
         this.fileDurationMs = reader.getFileDurationMs();
 
         AudioFormat format = reader.getAudioFormat();
-        this.frequencyResolution = reader.getAudioFormat().getSampleRate() / params.totalWindowLength();
+        this.audioSampleRate = format.getSampleRate();
+        this.frequencyResolution = format.getSampleRate() / params.totalWindowLength();
 
         double sampleLengthMs = 1 / format.getSampleRate() * 1000;
         this.windowDurationMs = sampleLengthMs * params.windowSize;
@@ -66,6 +70,7 @@ public abstract class FFTOutputObject {
         builder.append("== ").append(this instanceof FFTResult ? "FFTResult" : "FFTStream")
                 .append(" ==========================\n");
         builder.append(String.format("File: %s\n", fileName));
+        builder.append(String.format("Audio sample rate: %d\n", (long) audioSampleRate));
         builder.append(String.format("Frequency resolution: %.3f Hz\n", frequencyResolution));
         builder.append(String.format("Windowing function: %s\n", fftParameters.windowFunction.toString()));
         builder.append(String.format("Window duration: %.1f ms\n", windowDurationMs));
